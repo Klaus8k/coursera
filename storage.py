@@ -17,13 +17,14 @@ def key_vals():
 
     if val == None:
         print(storage_dict.values(key))
-    else:
-        if key not in storage_dict:
-            storage_dict[key] = val
-        else:
-            storage_dict[key] = storage_dict[key] + val
 
-    write_to_file(storage_dict)
+    elif key not in storage_dict:
+        storage_dict[key] = val
+        write_to_file(storage_dict)
+    else:
+        storage_dict[key] = storage_dict[key] + val
+
+        write_to_file(storage_dict)
 
 
 
