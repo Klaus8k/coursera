@@ -13,10 +13,15 @@ def key_vals():
     key = str(args.key)
     val = str(args.val)
 
+    read_from_file()
+
     if val == None:
         print(storage_dict.values(key))
     else:
-        storage_dict[key] = val
+        if key not in storage_dict:
+            storage_dict[key] = val
+        else:
+            storage_dict[key] = storage_dict[key] + val
 
     write_to_file(storage_dict)
 
@@ -24,14 +29,15 @@ def key_vals():
 
 def write_to_file (storage: dict):
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
-    print(storage_path)
     with open(storage_path, 'a') as f:
         f.write(str(storage))
         f.close()
 
-
-
-
+def read_from_file():
+    storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
+    with open(storage_path, 'w') as f:
+        f.readable()
+        f.close()
 
 
 key_vals()
