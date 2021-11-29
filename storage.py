@@ -24,8 +24,9 @@ def key_vals():
 
 def write_to_file (storage: dict):
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
-    with open(storage_path, 'w') as f:
-        f.write(storage)
+    print(storage_path)
+    with open(storage_path, 'a') as f:
+        f.write(str(storage))
         f.close()
 
 
@@ -33,3 +34,4 @@ def write_to_file (storage: dict):
 
 
 
+key_vals()
