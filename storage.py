@@ -9,24 +9,19 @@ def key_vals():
     args = parser.parse_args()
 
     storage_dict = read_from_file()
+    if len(storage_dict) != 0:
+        key = str(args.key)
+        val = str(args.val)
+        storage_dict = {key:[val,]}
+        write_to_file(storage_dict)
 
-    key = str(args.key)
-    val = str(args.val)
+
 
 # val присваивается в словаре и записывается. А не должен.
 # если  вал нет, то поиск по ключам, если нет то вернуть Ноне
 # Если вал есть, то проверить на наличии ключа и добавить к значентю, если нет ключа то сделать новую пару ключ-значение
 
 
-    if val == None:
-        print(storage_dict.values(key))
-
-    elif key in storage_dict:
-        storage_dict[key] += str(val)
-        write_to_file(storage_dict)
-    else:
-        storage_dict[key] = str(val)
-        write_to_file(storage_dict)
 
 
 def write_to_file (storage: dict):
@@ -34,15 +29,17 @@ def write_to_file (storage: dict):
     with open(storage_path, 'w') as f:
         f.write(str(storage))
         f.close()
-
+#
 def read_from_file() -> object:
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
-    with open(storage_path, 'r') as f:
-        x = f.read()
-        # if x == None: Тут надо правльно прочитать файл
-        #     return {}
-        # f.close()
-    return dict(x)
+    with open(storage_path, 'r+') as f:
+        lines = f.readline()
+        dic = {}
+        for line in lines:  # Проходимся по каждой строчке
+            key, value = line.split(': ')  # Разделяем каждую строку по двоеточии(в key будет - пицца, в value - 01)
+            dic.update({key: value}
+
+    return dict(dic)
 
 key_vals()
 
