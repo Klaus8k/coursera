@@ -1,6 +1,8 @@
 import json
+from functools import wraps
 
 def to_json(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
 
         result = json.dumps(func(*args, **kwargs))
@@ -8,7 +10,7 @@ def to_json(func):
         return result
     return wrapper
 
-
+@to_json
 def get_data():
 
     return {
@@ -17,5 +19,6 @@ def get_data():
 
 
 get_data()
+
 
 
