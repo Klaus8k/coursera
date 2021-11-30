@@ -27,11 +27,12 @@ def dic_form():
             old_val = dic[key]
             old_val.append(val)
             dic[key] = old_val
-            write_to_file(dic)
 
         else:
             dic[key] = [val]
-            write_to_file(dic)
+
+        write_to_file(dic)
+
 
 
 def write_to_file (storage: dict):
@@ -41,13 +42,14 @@ def write_to_file (storage: dict):
 
 def read_from_file() -> object:
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
-    with open(storage_path, 'w') as f:
-        try:
+
+    try:
+        with open(storage_path, 'r') as f:
             json_str = json.load(f)
             return dict(json_str)
-        except:
-            json_str = {}
-            return json_str
+    except:
+        json_str = {}
+        return json_str
 
 dic_form()
 
