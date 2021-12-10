@@ -1,49 +1,65 @@
 def inp ():
-    mes = input('?').split(' ')
-    # print(mes)
-    return mes
+    while True:
+        x = input()
+        x.lower()
+        mes = x.split()
+        if len(mes) != 3:
+            continue
+        if len(mes[1]) > 10 or len(mes[2]) > 10:
+            continue
+        else:
+            return mes
 
-# scope = {'nm': 'global', 'pr' : None, 'v' : []}
-scope =[]
 
-
-def create(nmsp,pr = None):
-    scope.append(dict({'nm': nmsp, 'pr' : pr, 'v':[]}))
-    return scope
-
-def add(nmsp, v):
+def add(scope, nmsp, v):
     if len(scope) == 0:
-        new_d = dict({'nm': nmsp, 'pr': None, 'v': []})
-        new_d['v'].append(v)
+        new_d = dict({'namespace': nmsp, 'parent': None, 'var': []})
+        new_d['var'].append(v)
         scope.append(new_d)
         return scope
-
-    for i in scope:
-        if i['nm'] == nmsp:
-            i['v'].append(v)
-            return i
-        else:
-            return None
-
-
-def get(nmsp, v):
-    for item in scope:
-        if nmsp in item:
-            if v in item:
-                return nmsp
-            elif item[1]:
-                get(item[1])
-            else:
-                return None
-
-for i in range(100):
-    mes = inp()
-    if mes[0] == 'c':
-        res = create(mes[1],mes[2])
-        print(res)
-    elif mes[0] == 'a':
-        res = add(mes[1],mes[2])
-        print(res)
     else:
-        res = get(mes[1],mes[2])
-        print(res)
+        for i, di in enumerate(scope):
+            if scope[i]['namespace'] == nmsp:
+                scope[i]['var'].append(v)
+                return scope
+
+    return None
+
+
+def get( nmsp, v):
+    for i in scope:
+        if i['namespace'] == nmsp:
+            if v in i['var']:
+                return nmsp
+            else:
+                if i['parent']:
+                    return get( i['parent'], v)
+                else:
+                    return None
+    return None
+
+
+
+
+scope =[]
+x = input()
+
+while 100 <= int(x) <= 1:
+    x = input()
+
+for i in range(int(x)):
+
+    mes = inp()
+    if mes[0] == 'create':
+        if len(scope) == 0:
+            scope.append(dict({'namespace': mes[1], 'parent': mes[2], 'var': []}))
+            scope.append(dict({'namespace': mes[2], 'parent': None, 'var': []}))
+        else:
+            scope.append(dict({'namespace': mes[1], 'parent': mes[2], 'var': []}))
+    elif mes[0] == 'add':
+        add(scope, mes[1],mes[2])
+        # print(scope)
+    elif mes[0] == 'get':
+        print(get( mes[1], mes[2]))
+    else: continue
+
