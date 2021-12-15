@@ -18,17 +18,16 @@ n = input()
 
 dic_er = {}
 for i in range(int(n)):
-    # print(dic_er)
+
     x = input().split()
     if len(x) != 1:
-        # y = {x[2]:x[:1]}
-        if x[2] in dic_er.keys():
-            r = {x[0]:x[2]}
-            dic_er.update(r)
-        else:
+
+        try:
+            dic_er.update({x[0]:x[2]})
+        except:
             dic_er[x[0]].add(x[2])
     else:
-        x = {x[0]: ()}
+        x = {x[0]: None}
         dic_er.update(x)
 
 # print(dic_er)
