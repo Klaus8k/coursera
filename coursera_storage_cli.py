@@ -2,7 +2,7 @@ import argparse
 import os
 import tempfile
 import json
-
+import random
 
 
 def dic_form():
