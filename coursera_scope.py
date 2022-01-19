@@ -1,3 +1,6 @@
+
+
+
 def inp ():
     while True:
         x = input()

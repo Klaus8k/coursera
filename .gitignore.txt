@@ -1,1 +1,2 @@
 git_pat_hp_note.txt
+passwords.txt
