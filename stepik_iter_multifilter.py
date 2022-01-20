@@ -14,33 +14,35 @@ class multifilter:
 
     def __init__(self, iterable, *funcs, judge=judge_any):
         self.iterable = iterable
-        self.funcs = set(funcs)
+        self.funcs = list(funcs)
         self.judge = judge
-        self.pos = 0
-        self.neg = 0
+        # self.pos = 0
+        # self.neg = 0
         self.coursor = 0
 
     def __iter__(self):
-        return self
-        # возвращает итератор по результирующей последовательности
+        for i in self.iterable:
+            pos, neg = 0, 0
+            for foo in self.funcs:
+
+                if foo(i):
+                    pos += 1
+                else:
+                    neg += 1
+
+            if self.judge(pos,neg):
+                yield i
+
+
 
     def __next__(self):
-        self.pos = 0
-        self.neg = 0
 
         if self.coursor >= len(self.iterable):
-            raise  StopIteration
+            raise StopIteration
 
-        for foo in self.funcs:
-            if foo(self.iterable[self.coursor]):
-                self.pos += 1
-            else:
-                self.neg += 1
-
-        if self.judge(self.pos, self.neg):
-            self.coursor += 1
-            return self.iterable[self.coursor-1]
         self.coursor += 1
+        return self.iterable[self.coursor]
+
 
 
 
