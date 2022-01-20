@@ -4,19 +4,32 @@ import os
 class File():
 
     def __init__(self, path):
-        Сделать условие с проверкой пути, если путь существует, то оставить содержимое как было.
         self.path = path
-        self.write('') # Тест 5.2. Изменено содержание файла. Для случая, когда при создании экземпляра класса
-                    # File в конструктор был передан путь до существующего файла, содержание файла не должно изменяться при инициализации.
+        self.start = 0
+        if os.path.exists(self.path) == False:
+            self.write('')
+
+    def __iter__(self):
+
+        return self
+
+    def __next__(self):
+        lst_file = self.read().split('\n')
+        if not lst_file[self.start]:
+            self.start = 0
+            raise  StopIteration
+        self.start += 1
+        return  lst_file[self.start-1] + '\n'
+
 
     def __str__(self):
-        x = os.path.abspath(self.path)
-        return 'Path: {}'.format(x)
+        return self.path
 
     def read(self):
-        with open(self.path, 'r') as f:
-            x = f.read()
-            return x
+        f = open(self.path, 'r')
+        x = f.read()
+        f.close()
+        return x
 
     def write(self, string):
         with open(self.path, 'w') as f:
@@ -25,23 +38,32 @@ class File():
 
     def __add__(self, other):
         temp = tempfile.gettempdir()
-        print(temp)
+        # print(temp)
         temp = os.path.join(temp, tempfile.NamedTemporaryFile().name)
-        print(temp)
+        # print(temp)
         new_file = File(temp)
         new_file.write(self.read() + other.read())
+        new_file.path = temp
+        return new_file
 
 
 
 a = File('1.txt')
 b = File('2.txt')
-a.write('aaaaaaaaa')
-b.write('bbbbbbbbb')
+a.write('1-aaaaaaaaa\n')
+b.write('2-bbbbbbbbb\n3-ggggggggggggg\n')
 print(a.read())
 print(b.read())
-print(a)
-print(b)
 c = a + b
-print(isinstance(c, File))
-g = File('1.txt')
-print(g.read())
+print(c.read())
+
+# print(next(c))
+# print(next(c))
+# print(next(c))
+# print(next(c))
+# #
+for line in c:
+    print(ascii(line))
+
+for line in c:
+    print(ascii(line))
