@@ -1,23 +1,40 @@
-import itertools
+import requests
 
 
-def primes():
-    n = 1000
-    a = range(n + 1)
-    a[1] = 0
-    lst = []
+class Asteroid:
+    BASE_API_URL = 'https://api.nasa.gov/neo/rest/v1/neo/{}?api_key=DEMO_KEY'
 
-    i = 2
-    while i <= n:
-        if a[i] != 0:
-            lst.append(a[i])
-            for j in range(i, n + 1, i):
-                a[j] = 0
-        i += 1
-    yield lst
+    def __init__(self, spk_id):
+        self.api_url = self.BASE_API_URL.format(spk_id)
+
+    def get_data(self):
+        return requests.get(self.api_url).json()
+
+    def __str__(self):
+        return (self.__dict__)
+
+    @property
+    def name(self):
+        return self.get_data()['name']
+
+    @property
+    def diameter(self):
+        return int(self.get_data()['estimated_diameter']['meters']['estimated_diameter_max'])
+
+    @property
+    def closest_approach(self):
+        closest = {
+            'date': None,
+            'distance': float('inf')
+        }
+        for approach in self.get_data()['close_approach_data']:
+            distance = float(approach['miss_distance']['lunar'])
+            if distance < closest['distance']:
+                closest.update({
+                    'date': approach['close_approach_date'],
+                    'distance': distance
+                })
+        print(closest)
+        return closest
 
 
-
-
-
-print(list(itertools.takewhile(lambda x : x <= 31, primes())))
