@@ -10,7 +10,7 @@ all_file.reverse()
 # print(all_file)
 
 for i in all_file:
-    m = i[0]#.split('\\')[-1]
+    m = i[0]
     for j in i[2]:
         if j.split('.')[1] == 'py':
             ans.append(m)

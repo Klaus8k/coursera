@@ -2,7 +2,6 @@ import argparse
 import os
 import tempfile
 import json
-import random
 
 
 def dic_form():
@@ -16,8 +15,8 @@ def dic_form():
 
     dic = read_from_file()
 
-    if val == None:
-        if  key in dic.keys():
+    if val is None:
+        if key in dic.keys():
             print(', '.join(dic[key]))
         else:
             print(None)
@@ -34,11 +33,11 @@ def dic_form():
         write_to_file(dic)
 
 
-
-def write_to_file (storage: dict):
+def write_to_file(storage: dict):
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
     with open(storage_path, 'w') as f:
         json.dump(storage, f)
+
 
 def read_from_file() -> object:
     storage_path = os.path.join(tempfile.gettempdir(), 'storage.data')
@@ -51,5 +50,5 @@ def read_from_file() -> object:
         json_str = {}
         return json_str
 
-dic_form()
 
+dic_form()

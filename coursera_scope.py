@@ -1,6 +1,4 @@
 
-
-
 def inp ():
     while True:
         x = input()
@@ -60,9 +58,9 @@ for i in range(int(x)):
         else:
             scope.append(dict({'namespace': mes[1], 'parent': mes[2], 'var': []}))
     elif mes[0] == 'add':
-        add(scope, mes[1],mes[2])
+        add(scope, mes[1], mes[2])
         # print(scope)
     elif mes[0] == 'get':
-        print(get( mes[1], mes[2]))
-    else: continue
-
+        print(get(mes[1], mes[2]))
+    else:
+        continue
