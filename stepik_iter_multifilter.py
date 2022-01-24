@@ -36,7 +36,6 @@ class multifilter:
 
 
     def __next__(self):
-
         if self.coursor >= len(self.iterable):
             raise StopIteration
 
