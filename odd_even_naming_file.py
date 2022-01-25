@@ -35,30 +35,31 @@ class Dir_file():
     def mk_dir(self, name):
         os.mkdir(name)
 
-def ood_even_func(odd_dir_obj, even_dir_obj):
+def ood_even_func(odd_dir_obj, even_dir_obj = None):
     """Написать функцию, в котрую подаются 2 объекта.
     Функция из 2х объектов папок, делает 3ю и туда файлы четные и нечетные складывает, разбирая лицевую и оборот
 
     ******************
 
     Пока просто переименовываем в текущих папках"""
-    odd, even = 1,2
-    print(odd_dir_obj.file_list())
-    for i in odd_dir_obj.file_list():
-        print(i)
-        try:
-            os.rename(i, str(odd))
-        except FileExistsError:
-            odd += 2
-            continue
+    non_sorted_list = odd_dir_obj.files
+    sorted_list = sorted(non_sorted_list, key=lambda non_sorted_list: int(non_sorted_list.split('.')[0]))
+    odd_dir_obj.files  = sorted_list
+
+    # non_sorted_list = even_dir_obj.files
+    # sorted_list = sorted(non_sorted_list, key=lambda non_sorted_list: int(non_sorted_list.split('.')[0]))
+    # even_dir_obj.files = sorted_list
+    #
+    # print(odd_dir_obj.files, even_dir_obj.files)
+
+    odd = 2 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    print(odd_dir_obj.files)
+    for i in reversed(odd_dir_obj.files):
+        os.rename(i, str(odd) + str('_.' + i.split('.')[1]))
+        odd += 2
 
 
 dir_1 = Dir_file(r'C:\Users\Copy\Desktop\1')
-dir_1.fill_dir(30)
-# dir_1.file_list()
-print(dir_1.files)
-# dir_2 = Dir_file(r'C:\Users\Copy\Desktop\2')
-# dir_2.fill_dir(30)
 
-
-# ood_even_func(dir_1, dir_2)
+ood_even_func(dir_1)
