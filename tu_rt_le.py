@@ -25,11 +25,12 @@ class Pencil(Turtle):
 
 def main():
     x = Pencil()
-    x.speed(1000)
+
+    x.speed(20)
     x.setheading(90)
     start_pos = x.pos()
     for i in Pencil.WAY_BOX:
-        x.forward(i)
+        x.forward(i/5)
         if Pencil.DIRECTION_WAY[Pencil.WAY_BOX.index(i)] == 'r':
             x.right(90)
         elif Pencil.DIRECTION_WAY[Pencil.WAY_BOX.index(i)] == 'l':
@@ -41,10 +42,6 @@ def main():
     del(x)
 
     return start_pos, end_pos
-
-
-
-
 
 
 if __name__ == '__main__':
