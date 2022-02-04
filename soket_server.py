@@ -10,6 +10,7 @@ with socket.socket() as sock:
             data = conn.recv(1024)
             if data:
                 print(data.decode('utf-8'))
+                conn.send(b'ok')
             else:
-                break
+                conn.send(b'Erorr')
 

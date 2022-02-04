@@ -1,4 +1,5 @@
 import socket
+import time
 
 
 class Client():
@@ -14,19 +15,31 @@ class Client():
         self.timeout = timeout
         self.sock = socket.create_connection((host, port), timeout)
 
-    def put(self, data: str):  # Здесь отправляем значения, ничего не возвращаем если удачно
-        self.sock.send(data.encode('utf-8'))  # Отправка в байткоде или декодером, подготовленного сообщения, по сигнатуре. Вроде можно через енкод в ютф 8
+    def put(self, name_and_metric: str, value: float, timestamp=int(time.time())):
+        data = f'put {name_and_metric} {value} {timestamp}\\n'
+        try:
+            self.sock.send(data.encode('utf-8'))
+            print(self.sock.recv(1024).decode('utf-8'))
+        except BaseException as ClientError:
+            print(data, ' - Fail')
+            raise ClientError
 
-    def get(self, name_metrics):
-        pass
-        # Сюда имя метрики которую мы хотим получить от сервера.
-
-    def close_conn(self):  # Посмотреть как закрывать соединения
-        self.sock.shutdown(0)
+    def get(self, name_and_metrics: str):
+        data = f'get {name_and_metrics}\\n'
+        try:
+            self.sock.send(data.encode('utf-8'))
+            print(self.sock.recv(1024).decode('utf-8'))
+        except BaseException as ClientError:
+            print(data, ' - Fail')
+            raise ClientError
 
 
 if __name__ == '__main__':
     x = Client('127.0.0.1', 20003)
-    data = x.__doc__
-    x.put(data)
-    x.close_conn()
+    x.put("eardrum.memory", 4200000)
+    print(x.__dict__)
+    x.put("eardrum.memory", 4200)
+
+    time.sleep(1)
+    x.get("eardrum.memory")
+    # x.get('*')
