@@ -32,8 +32,11 @@ class Client():
             req = self.sock.recv(1024)
         except BaseException as ClientError:
             raise ClientError
-        print(req.decode('utf-8'))
 
+        req = req.decode('utf-8')
+        req = req.split('\\n')
+        req.pop(0)
+        print(req) # Спсок из ответа, надо разобрать на словарь
 
 
 
