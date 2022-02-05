@@ -1,7 +1,7 @@
 import socket
 import time
 
-
+# Реализоваить класс пользовательского исключения Клиент Ерор. А то даже первый тест не проходит)
 class Client():
     """
     Класс слиент, соединяется с сокетом по адресу
@@ -26,7 +26,7 @@ class Client():
 
     def get(self, name_and_metrics: str):
         data = f'get {name_and_metrics}\\n'
-        print(data)
+        # print(data)
         try:
             self.sock.send(data.encode('utf-8'))
             req = self.sock.recv(1024)
@@ -34,15 +34,33 @@ class Client():
             raise ClientError
 
         req = req.decode('utf-8')
-        req = req.split('\\n')
-        req.pop(0)
-        print(req) # Спсок из ответа, надо разобрать на словарь
+        req = req.split('\\n')[1:-2]
+        # req.pop(0)
+        # print(req) # Спсок из ответа, надо разобрать на словарь
+        res_dict = dict()
+        keys = []
+        metrics = []
+        for i in req:
+            key = i.split()[0]
+            x = i.split()[1:]
+            x.reverse()
+            tup_x = tuple(x)
+            metrics.append(tup_x)
+            if key in res_dict.keys():
+                res_dict[key].append(tup_x)
+            else:
+                res_dict[key] = []
+                res_dict[key].append(tup_x)
+                # Sort list metrics
+            for val in res_dict.values():
+                val.sort()
+
+        return res_dict
 
 
-
-if __name__ == '__main__':
-    x = Client('127.0.0.1', 20003)
-    # x.put("eardrum.memory", 4200000)
-    # x.put("eardrum.memory", 4200)
-    # x.get("eardrum.memory")
-    x.get('*')
+# if __name__ == '__main__':
+#     x = Client('127.0.0.1', 20003)
+#     # x.put("eardrum.memory", 4200000)
+#     # x.put("eardrum.memory", 4200)
+#     # x.get("eardrum.memory")
+#     print(x.get('*'))
