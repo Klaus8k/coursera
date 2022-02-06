@@ -1,6 +1,9 @@
 import socket
 import time
 
+class ClientError(Exception):
+    pass
+
 # Реализоваить класс пользовательского исключения Клиент Ерор. А то даже первый тест не проходит)
 class Client():
     """
@@ -19,21 +22,23 @@ class Client():
         data = f'put {name_and_metric} {value} {timestamp}\\n'
         try:
             self.sock.send(data.encode('utf-8'))
-            print(self.sock.recv(1024).decode('utf-8'))
-        except BaseException as ClientError:
-            print(data, ' - Fail')
+        except:
             raise ClientError
 
     def get(self, name_and_metrics: str):
         data = f'get {name_and_metrics}\\n'
-        # print(data)
         try:
             self.sock.send(data.encode('utf-8'))
             req = self.sock.recv(1024)
-        except BaseException as ClientError:
-            raise ClientError
+            req = req.decode('utf-8')
+            print(data, req, '\n')
 
-        req = req.decode('utf-8')
+        except:
+            raise ClientError
+        print(req)
+        if req.split('\\n')[0] == 'error':
+
+            return {}
         req = req.split('\\n')[1:-2]
         # req.pop(0)
         # print(req) # Спсок из ответа, надо разобрать на словарь
@@ -58,9 +63,9 @@ class Client():
         return res_dict
 
 
-# if __name__ == '__main__':
-#     x = Client('127.0.0.1', 20003)
-#     # x.put("eardrum.memory", 4200000)
-#     # x.put("eardrum.memory", 4200)
-#     # x.get("eardrum.memory")
-#     print(x.get('*'))
+if __name__ == '__main__':
+    x = Client('127.0.0.1', 8888)
+    # x.put("eardrum.memory", 4200000)
+    # x.put("eardrum.memory", 4200)
+    # x.get("eardrum.memory")
+    print(x.get('*'))

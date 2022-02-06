@@ -3,7 +3,7 @@ import socket
 answer_str = r'ok\npalm.cpu 2.0 1150864248\npalm.cpu 0.5 1150864247\neardrum.cpu 3.0 1150864250\n\n'
 answer_ok = r'ok\n\n'
 with socket.socket() as sock:
-    sock.bind(("",20003))
+    sock.bind(("",8888))
     sock.listen()
 
     while True:
@@ -19,7 +19,7 @@ with socket.socket() as sock:
                 if data:
                     print(data)
                     print(data.decode('utf-8'))
-                    conn.send(answer_ok.encode('utf-8'))
+                    conn.send(answer_str.encode('utf-8'))
                 else:
                     break
 
