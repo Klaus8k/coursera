@@ -1,26 +1,34 @@
+# реализация сервера для тестирования метода get по заданию - Клиент для отправки метрик
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import socket
 
-answer_str = r'ok\npalm.cpu 2.0 1150864248\npalm.cpu 0.5 1150864247\neardrum.cpu 3.0 1150864250\n\n'
-answer_ok = r'ok\n\n'
-with socket.socket() as sock:
-    sock.bind(("",8888))
-    sock.listen()
+sock = socket.socket()
+sock.bind(('127.0.0.1', 8888))
+sock.listen(1)
+conn, addr = sock.accept()
 
-    while True:
-        conn, addr = sock.accept()
+print('Соединение установлено:', addr)
 
+# переменная response хранит строку возвращаемую сервером, если вам для
+# тестирования клиента необходим другой ответ, измените ее
+# response = b'ok\npalm.cpu 10.5 1501864247\neardrum.cpu 15.3 1501864259\n\n'
+# response = b'ok\npalm.cpu 2 1150864249.0\npalm.cpu 0.5 1150864248\neardrum.cpu 3.0 1150864250\n\n'
+# response = b"some_text\nok\n\n"
+# response = b'ok\neardrum.cpu 15.3 1501864259\n\n'
+response = b"ok\n\n"
+# response = b"ok\n\n11111111111\n\n111"
+# response = b"error\nwrong command\n\n"
+# response = b"vaekjvkjadfbvkjanvkjandvk;jdfnvjkandf;vnajkdfnv"
 
-        with conn:
-            while True:
-                try:
-                    data = conn.recv(1024)
-                except OSError:
-                    continue
-                if data:
-                    print(data)
-                    print(data.decode('utf-8'))
-                    conn.send(answer_str.encode('utf-8'))
-                else:
-                    break
+while True:
+    data = conn.recv(1024)
+    if not data:
+        break
+    request = data.decode('utf-8')
+    print(f'Получен запрос: {ascii(request)}')
+    print(f'Отправлен ответ {ascii(response.decode("utf-8"))}')
+    conn.send(response)
 
-
+conn.close()
