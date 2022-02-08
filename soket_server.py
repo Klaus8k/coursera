@@ -15,12 +15,13 @@ class ServerProtocol(asyncio.Protocol):
         # Что то вот это не работает. Возвращает одно значение при этом не отправляет во write
         if resp.split()[0] == 'put':
             print(resp)
-            responce = self.put(resp)
+            yield from self.put(resp)
         elif resp.split()[0] == 'get':
             responce == self.get(resp)
         else: self.responce = 'error\nwrong command\n\n'
 
-        self.transport.write(responce.encode())
+        print(self.transport.write(responce.encode()))
+
 
     def put(self, request):
         print('put')
