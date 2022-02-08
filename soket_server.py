@@ -12,8 +12,23 @@ class ServerProtocol(asyncio.Protocol):
     def data_received(self, data: bytes) -> None:
         resp = data.decode()
 
-        self.transport.write(resp.encode())
+        # Что то вот это не работает. Возвращает одно значение при этом не отправляет во write
+        if resp.split()[0] == 'put':
+            print(resp)
+            responce = self.put(resp)
+        elif resp.split()[0] == 'get':
+            responce == self.get(resp)
+        else: self.responce = 'error\nwrong command\n\n'
 
+        self.transport.write(responce.encode())
+
+    def put(self, request):
+        print('put')
+        return 'PUT'
+
+    def get(self, request):
+        print('get')
+        return 'GET'
 
 
 

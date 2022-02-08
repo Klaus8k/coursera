@@ -85,4 +85,9 @@ class Client:
 
 if __name__ == '__main__':
     x = Client('127.0.0.1', 8888)
-    x.get('gg*')
+    y = Client('127.0.0.1',8888)
+    x.put('1palm.cpu', 23.7, 1150864247)
+    y.put('palm.cpu', 2, 1150864235)
+    x.put('eardrum.cpu', 12, 1150862247)
+    x.get('*')
+    y.get('palm.cpu')
