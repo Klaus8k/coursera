@@ -1,34 +1,36 @@
-# реализация сервера для тестирования метода get по заданию - Клиент для отправки метрик
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
+import asyncio
 import socket
 
-sock = socket.socket()
-sock.bind(('127.0.0.1', 8888))
-sock.listen(1)
-conn, addr = sock.accept()
+class ServerProtocol(asyncio.Protocol):
+    """Запросы от клиента приходят в data_received(), после чего
+    передаем в put() or get(). Там формируем ответ, возвращаем.
+    Вопрос о сохранении данных для дальнейших ответов по ГЕТ"""
 
-print('Соединение установлено:', addr)
 
-# переменная response хранит строку возвращаемую сервером, если вам для
-# тестирования клиента необходим другой ответ, измените ее
-# response = b'ok\npalm.cpu 10.5 1501864247\neardrum.cpu 15.3 1501864259\n\n'
-# response = b'ok\npalm.cpu 2 1150864249.0\npalm.cpu 0.5 1150864248\neardrum.cpu 3.0 1150864250\n\n'
-# response = b"some_text\nok\n\n"
-# response = b'ok\neardrum.cpu 15.3 1501864259\n\n'
-response = b"ok\n\n"
-# response = b"ok\n\n11111111111\n\n111"
-# response = b"error\nwrong command\n\n"
-# response = b"vaekjvkjadfbvkjanvkjandvk;jdfnvjkandf;vnajkdfnv"
+    def connection_made(self, transport) -> None:
+        self.transport = transport
+    def data_received(self, data: bytes) -> None:
+        resp = data.decode()
 
-while True:
-    data = conn.recv(1024)
-    if not data:
-        break
-    request = data.decode('utf-8')
-    print(f'Получен запрос: {ascii(request)}')
-    print(f'Отправлен ответ {ascii(response.decode("utf-8"))}')
-    conn.send(response)
+        self.transport.write(resp.encode())
 
-conn.close()
+
+
+
+
+
+
+
+loop = asyncio.get_event_loop()
+coro = loop.create_server(ServerProtocol,'127.0.0.1',55555)
+
+server = loop.run_until_complete(coro)
+
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass
+
+server.close()
+loop.run_until_complete(server.wait_closed())
+loop.close()
