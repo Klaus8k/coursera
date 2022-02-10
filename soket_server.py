@@ -14,25 +14,43 @@ def connect_socket(serv):
     while True:
         data = conn.recv(1024)
         if not data:
+            conn.close()
             break
 
-        data = data.decode().split()
-        if data.pop(0) == 'put':
-            result = put(data)
-            print(all_data)
-        else:
-            result = get(data)
-            print(all_data)
+        data = data.decode().split('\\n')
+
+        print('data reuest ---------- ', data)
+
+        for j in data:
+            i = j.split()
+            if i[0] == 'put':
+                try:
+                    key, value, timestamp = i[1:]
+                    value = float(value)
+                    timestamp = int(timestamp)
+                except:
+                    result = 'error\nwrong command\n\n'
+
+                result = put(key, value, timestamp)
+
+
+            elif i[0] == 'get' and len(i) == 2:
+                result = get(i[1])
 
 
 
-        conn.send(result.encode())
+            else:
+                result = 'error\nwrong command\n\n'
+
+
+            print('response ---------- ', result)
+            conn.send(result.encode())
 
     conn.close()
+    return None
 
-def put(row):
+def put(key, value, timestamp):
 
-    key, value, timestamp = row
     dic = {key: [(float(value), int(timestamp))]}
     if not key in all_data.keys():
         all_data.update(dic)
@@ -42,12 +60,32 @@ def put(row):
     for i in all_data.values():
         i.sort()
 
-    return 'ok\n\n'
-
-def get(data):
-
 
     return 'ok\n\n'
+
+def get(row):
+    responce = 'ok\n'
+    try:
+        if row == '*':
+            for i in all_data.keys():
+                for j in all_data[i]:
+                    responce += f'{i} {j[0]} {j[1]}\n'
+        elif row in all_data.keys():
+            for i in all_data[row]:
+                    responce += f'{row} {i[0]} {i[1]}\n'
+        else:
+            responce = 'ok\n\n'
+    except:
+        return 'error\nwrong command\n\n'
+    return responce
+
+
+
+
+
+
+
+
 
 
 

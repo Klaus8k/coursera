@@ -28,7 +28,7 @@ class Client:
                 data += self.connection.recv(1024)
             except socket.error as err:
                 raise ClientError("Error reading data from socket", err)
-        print(data.decode('utf-8'))
+        # print(data.decode('utf-8'))
         return data.decode('utf-8')
 
     def _send(self, data):
@@ -86,14 +86,17 @@ class Client:
 if __name__ == '__main__':
     x = Client('127.0.0.1', 8888)
     # print(x.get('*'))
-    print(x.put('eardrum.cpu', 12, 1150862249))
-    print(x.put('eardrum.cpu', 12, 1150862240))
-    print(x.put('eardrum.mem', 2, 1150862262))
-    # print(x.get('palm.cpu'))
-    # print(x.get('*'))
+    x.put('palm.cpu', 12, 1150465249)
+    x.put('eardrum.cpu', 12, 1150862249)
+    x.put('eardrum.cpu', 12, 1150862240)
+    x.put('eardrum.mem', 2, 1150862262)
+
+    # x.get('eardrum.cpu')
+    x.get('*')
+    # x.get('palm.cpu')
     x.close()
     y = Client('127.0.0.1', 8888)
     print(y.put('palm.cpu', 2, 1150862248))
-    # print(y.get('eardrum.mem'))
+    print(y.get('eardrum.mem'))
     # print(y.get('*'))
-    y.close()
+    # y.close()

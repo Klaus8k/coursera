@@ -19,13 +19,14 @@ def run(host, port):
 
     try:
         data = client1.get(command)
+
     except ClientError:
         pass
     except BaseException as err:
         print(f"Ошибка соединения с сервером: {err.__class__}: {err}")
         sys.exit(1)
     else:
-        print("Неверная команда, отправленная серверу, должна возвращать ошибку протокола")
+        print(f"Неверная команда {command}, отправленная серверу, должна возвращать ошибку протокола")
         sys.exit(1)
 
     command = 'some_key'
