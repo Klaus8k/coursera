@@ -22,10 +22,12 @@ class Client:
         try:
             self.sock.send(data.encode('utf-8'))
             responce = self.sock.recv(1024)
+            print(responce)
             if responce.decode('utf-8') != 'ok\n\n':
                 raise ClientError
         except:
             raise ClientError
+
 
     def get(self, name_and_metrics: str):
         data = f'get {name_and_metrics}\n'
@@ -81,5 +83,5 @@ class Client:
 
 if __name__ == '__main__':
     x = Client('127.0.0.1', 8888)
-    x.put("eardrum.memory", 4200000)
+    x.put("eardrum.memory", 4200000, 5)
     # print(x.get('*'))
