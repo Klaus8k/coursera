@@ -7,6 +7,7 @@ all_data = {}
 def run_server(host,port):
     with socket.create_server((host,port)) as serv:
         while True:
+            serv.settimeout(10)
             connect_socket(serv)
 
 def connect_socket(serv):
@@ -16,8 +17,16 @@ def connect_socket(serv):
         if not data:
             conn.close()
             break
+        print('data recv ---------- ', data)
 
-        data = data.decode().split('\\n')
+        data_list = data.decode().split('\n')
+        print('data reuest ---------- ', data_list)
+        data = []
+
+        for i in data_list:
+            if i != '':
+                data.append(i)
+
 
         print('data reuest ---------- ', data)
 
@@ -43,7 +52,8 @@ def connect_socket(serv):
                 result = 'error\nwrong command\n\n'
 
 
-            print('response ---------- ', result)
+            # print('response ---------- ', result)
+            result += '\n'
             conn.send(result.encode())
 
     conn.close()
@@ -59,12 +69,13 @@ def put(key, value, timestamp):
 
     for i in all_data.values():
         i.sort()
-
-
-    return 'ok\n\n'
+    print('all_data--------- ', all_data)
+    print('put dic ----------- ', dic)
+    return 'ok\n'
 
 def get(row):
-    responce = 'ok\n'
+    responce = 'ok'
+    print('get row -------------', row)
     try:
         if row == '*':
             for i in all_data.keys():
@@ -74,9 +85,10 @@ def get(row):
             for i in all_data[row]:
                     responce += f'{row} {i[0]} {i[1]}\n'
         else:
-            responce = 'ok\n\n'
+            responce = 'ok\n'
     except:
-        return 'error\nwrong command\n\n'
+        return 'error\nwrong command\n'
+    print('get_responce ------ ', responce)
     return responce
 
 
