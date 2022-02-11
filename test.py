@@ -17,50 +17,52 @@ class ClientServerProtocol(asyncio.Protocol):
 
 
     def send(self, data):
+        print('send', data)
         self.transport.write(data)
 
     def listen(self, data):
-        # while True:
-        # data = b""
-        # while not data.endswith(b"\n"):
-        #     data += x
 
         i = data.decode().split()
-
-        if i[0] == 'put':
+        print(data)
+        if data == b'\n':
+            result = 'error\nwrong command\n'
+        elif i[0] == 'put':
             try:
                 key, value, timestamp = i[1:]
                 value = float(value)
                 timestamp = int(timestamp)
+                print(key, value, timestamp)
+                result = self.put(key, value, timestamp)
             except:
-                result = 'error\nwrong command\n\n'
-            result = self.put(key, value, timestamp)
+                result = 'error\nwrong command\n'
+
+
 
         elif i[0] == 'get' and len(i) == 2:
             if not all_data:
                 result = 'ok\n'
             else:
                 result = self.get(i[1])
-
         else:
-            result = 'error\nwrong command\n\n'
+            result = 'error\nwrong command\n'
 
         result += '\n'
-        print(result)
         i = result.encode()
         self.send(i)
 
     def put(self, key, value, timestamp):
         dic = {key: [(float(value), int(timestamp))]}
+
         if not key in all_data.keys():
             all_data.update(dic)
         elif key in all_data.keys():
             for i in all_data[key]:
                 if timestamp == i[1]:
-                    all_data[key].pop()
+                    all_data[key].remove(i)
             all_data[key].append((float(value), int(timestamp)))
+        # print(all_data)
 
-        for i in all_data.values():
+        for i in all_data.values(): # При обращении сортирует по разному, и из за этого неправильный гет
             i.sort()
         return 'ok\n'
 
@@ -82,6 +84,8 @@ class ClientServerProtocol(asyncio.Protocol):
         except:
             return 'error\nwrong command\n'
         return responce
+
+
 
 
 # Запуск асинхронного сервера
