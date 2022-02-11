@@ -92,6 +92,8 @@ def get(row):
 
     try:
         if row == '*':
+            if all_data == {}:
+                return 'ok\n'
             for i in all_data.keys():
                 for j in all_data[i]:
                     responce += f'{i} {j[0]} {j[1]}\n'
