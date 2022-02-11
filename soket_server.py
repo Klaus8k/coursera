@@ -29,11 +29,11 @@ async def connect_socket(reader, writer):
         timme = int(time.time())
 
         data = b""
-        print('enter time ---- ', round(time.time() - timme, 1))
+        # print('enter time ---- ', round(time.time() - timme, 1))
         while not data.endswith(b"\n"):
             data += await reader.read(1024)
 
-        print('START data reuest ---- ', data, round(time.time() - timme, 1))
+        # print('START data reuest ---- ', data, round(time.time() - timme, 1))
 
         i = data.decode().split()
 
@@ -45,7 +45,7 @@ async def connect_socket(reader, writer):
                 timestamp = int(timestamp)
             except:
                 result = 'error\nwrong command\n\n'
-            print('time put ---- ', round(time.time() - timme, 1))
+            # print('time put ---- ', round(time.time() - timme, 1))
 
             result = put(key, value, timestamp)
 
@@ -58,7 +58,7 @@ async def connect_socket(reader, writer):
 
         result += '\n'
         i = result.encode()
-        print('response and END ---- ', i, round(time.time() - timme, 1))
+        # print('response and END ---- ', i, round(time.time() - timme, 1))
         writer.write(i)
         await writer.drain()
         # print('response and END ---- ', i, round(time.time() - timme, 1))
@@ -68,22 +68,28 @@ async def connect_socket(reader, writer):
 def put(key, value, timestamp):
     # print('time 1 ---- ', (timme))
     dic = {key: [(float(value), int(timestamp))]}
+
     if not key in all_data.keys():
         all_data.update(dic)
-    else:
+    elif key in all_data.keys():
+        for i in all_data[key]:
+            if timestamp == i[1]:
+                all_data[key].pop()
+                # return 'ok\n'
         all_data[key].append((float(value), int(timestamp)))
 
     for i in all_data.values():
         i.sort()
-    print('all_data---- ', all_data)
-    print('put dic ---- ', dic)
+    # print('all_data---- ', all_data)
+    # print('put dic ---- ', dic)
     # print('time 2 ----', (datetime.time() - timme))
     return 'ok\n'
 
 
 def get(row):
-    responce = 'ok'
-    print('get row ----', row)
+    responce = 'ok\n'
+    # print('get row ----', row)
+
     try:
         if row == '*':
             for i in all_data.keys():
@@ -94,9 +100,10 @@ def get(row):
                 responce += f'{row} {i[0]} {i[1]}\n'
         else:
             responce = 'ok\n'
+
     except:
         return 'error\nwrong command\n'
-    print('get_responce ---', responce[:-1])
+    # print('get_responce ---', responce[:-1])
     return responce
 
 
