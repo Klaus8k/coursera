@@ -38,6 +38,7 @@ class Client:
             raise ClientError
 
         req = req.decode('utf-8')
+        print(req)
         answer = req.split('\n')
 
 
@@ -83,5 +84,8 @@ class Client:
 
 if __name__ == '__main__':
     x = Client('127.0.0.1', 8888)
+    print(x.get('*'))
     x.put("eardrum.memory", 4200000, 5)
-    # print(x.get('*'))
+
+    x.put("eardrum.memory", 4200025, 5)
+    print(x.get('*'))

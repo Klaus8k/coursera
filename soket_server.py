@@ -7,7 +7,6 @@ all_data = {}
 
 
 def run_server(host, port):
-
     loop = asyncio.get_event_loop()
     coro = asyncio.start_server(connect_socket, host, port)
 
@@ -24,7 +23,6 @@ def run_server(host, port):
 
 
 async def connect_socket(reader, writer):
-
     while True:
         timme = int(time.time())
 
@@ -51,7 +49,10 @@ async def connect_socket(reader, writer):
 
 
         elif i[0] == 'get' and len(i) == 2:
-            result = get(i[1])
+            if not all_data:
+                result = 'ok\n'
+            else:
+                result = get(i[1])
 
         else:
             result = 'error\nwrong command\n\n'
@@ -61,8 +62,8 @@ async def connect_socket(reader, writer):
         # print('response and END ---- ', i, round(time.time() - timme, 1))
         writer.write(i)
         await writer.drain()
-        # print('response and END ---- ', i, round(time.time() - timme, 1))
 
+        print('response and END ---- ', i, round(time.time() - timme, 1))
 
 
 def put(key, value, timestamp):
@@ -92,8 +93,7 @@ def get(row):
 
     try:
         if row == '*':
-            if all_data == {}:
-                return 'ok\n'
+
             for i in all_data.keys():
                 for j in all_data[i]:
                     responce += f'{i} {j[0]} {j[1]}\n'
@@ -111,4 +111,3 @@ def get(row):
 
 if __name__ == '__main__':
     run_server('127.0.0.1', 8888)
-
