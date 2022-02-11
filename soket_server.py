@@ -23,13 +23,19 @@ def run_server(host, port):
 
 
 async def connect_socket(reader, writer):
+    print(writer.is_closing())
+
     while True:
         timme = int(time.time())
 
         data = b""
-        # print('enter time ---- ', round(time.time() - timme, 1))
+        print('enter time ---- ', round(time.time() - timme))
         while not data.endswith(b"\n"):
-            data += await reader.read(1024)
+            try:
+                data += await reader.read(1024)
+            except:
+                writer.close()
+                await writer.wait_closed()
 
         # print('START data reuest ---- ', data, round(time.time() - timme, 1))
 
@@ -63,8 +69,11 @@ async def connect_socket(reader, writer):
         writer.write(i)
         await writer.drain()
         # https: // docs.python.org / 3.6 / library / asyncio - stream.html
-        print('response and END ---- ', i, round(time.time() - timme, 1))
-    writer.close()
+        print('response and END ---- ', i, round(time.time() - timme))
+
+
+
+    # writer.close()
 
 def put(key, value, timestamp):
     # print('time 1 ---- ', (timme))
