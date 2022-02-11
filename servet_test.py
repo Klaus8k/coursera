@@ -61,7 +61,7 @@ def run(host, port):
         "должен возвращать ответ с пустым полем данных."
 
     try:
-        client1.put("k1", 0.25, timestamp=1)
+        client1.put("k1", 0.25, timestamp=1) # !!!!!!!!!!!!
         client2.put("k1", 2.156, timestamp=2)
         client1.put("k1", 0.35, timestamp=3)
         client2.put("k2", 30, timestamp=4)

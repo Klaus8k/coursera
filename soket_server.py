@@ -1,66 +1,72 @@
 import socket
 import threading
-from multiprocessing import Queue
+import time
+import asyncio
 
 all_data = {}
 
-def run_server(host,port):
-    with socket.create_server((host,port)) as serv:
-        while True:
-            serv.settimeout(10)
-            connect_socket(serv)
 
-def connect_socket(serv):
-    conn, addr = serv.accept()
+def run_server(host, port):
+
+    loop = asyncio.get_event_loop()
+    coro = asyncio.start_server(connect_socket, host, port)
+
+    server = loop.run_until_complete(coro)
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()
+
+
+async def connect_socket(reader, writer):
+
     while True:
-        data = conn.recv(1024)
-        if not data:
-            conn.close()
-            break
-        print('data recv ---------- ', data)
+        timme = int(time.time())
 
-        data_list = data.decode().split('\n')
-        print('data reuest ---------- ', data_list)
-        data = []
+        data = b""
+        print('enter time ---- ', round(time.time() - timme, 1))
+        while not data.endswith(b"\n"):
+            data += await reader.read(1024)
 
-        for i in data_list:
-            if i != '':
-                data.append(i)
+        print('START data reuest ---- ', data, round(time.time() - timme, 1))
 
+        i = data.decode().split()
 
-        print('data reuest ---------- ', data)
+        if i[0] == 'put':
 
-        for j in data:
-            i = j.split()
-            if i[0] == 'put':
-                try:
-                    key, value, timestamp = i[1:]
-                    value = float(value)
-                    timestamp = int(timestamp)
-                except:
-                    result = 'error\nwrong command\n\n'
-
-                result = put(key, value, timestamp)
-
-
-            elif i[0] == 'get' and len(i) == 2:
-                result = get(i[1])
-
-
-
-            else:
+            try:
+                key, value, timestamp = i[1:]
+                value = float(value)
+                timestamp = int(timestamp)
+            except:
                 result = 'error\nwrong command\n\n'
+            print('time put ---- ', round(time.time() - timme, 1))
+
+            result = put(key, value, timestamp)
 
 
-            # print('response ---------- ', result)
-            result += '\n'
-            conn.send(result.encode())
+        elif i[0] == 'get' and len(i) == 2:
+            result = get(i[1])
 
-    conn.close()
-    return None
+        else:
+            result = 'error\nwrong command\n\n'
+
+        result += '\n'
+        i = result.encode()
+        print('response and END ---- ', i, round(time.time() - timme, 1))
+        writer.write(i)
+        await writer.drain()
+        # print('response and END ---- ', i, round(time.time() - timme, 1))
+
+
 
 def put(key, value, timestamp):
-
+    # print('time 1 ---- ', (timme))
     dic = {key: [(float(value), int(timestamp))]}
     if not key in all_data.keys():
         all_data.update(dic)
@@ -69,13 +75,15 @@ def put(key, value, timestamp):
 
     for i in all_data.values():
         i.sort()
-    print('all_data--------- ', all_data)
-    print('put dic ----------- ', dic)
+    print('all_data---- ', all_data)
+    print('put dic ---- ', dic)
+    # print('time 2 ----', (datetime.time() - timme))
     return 'ok\n'
+
 
 def get(row):
     responce = 'ok'
-    print('get row -------------', row)
+    print('get row ----', row)
     try:
         if row == '*':
             for i in all_data.keys():
@@ -83,24 +91,15 @@ def get(row):
                     responce += f'{i} {j[0]} {j[1]}\n'
         elif row in all_data.keys():
             for i in all_data[row]:
-                    responce += f'{row} {i[0]} {i[1]}\n'
+                responce += f'{row} {i[0]} {i[1]}\n'
         else:
             responce = 'ok\n'
     except:
         return 'error\nwrong command\n'
-    print('get_responce ------ ', responce)
+    print('get_responce ---', responce[:-1])
     return responce
 
 
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
-
     run_server('127.0.0.1', 8888)
+
