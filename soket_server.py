@@ -62,7 +62,7 @@ async def connect_socket(reader, writer):
         # print('response and END ---- ', i, round(time.time() - timme, 1))
         writer.write(i)
         await writer.drain()
-
+        https: // docs.python.org / 3.6 / library / asyncio - stream.html
         print('response and END ---- ', i, round(time.time() - timme, 1))
 
 
