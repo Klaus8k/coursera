@@ -36,6 +36,8 @@ for i in responce_file.splitlines():
         x = parc.result[0][1]
         result_list.append(x)
 
+# Не все чистится. Попробовать сначала из файла 2. Или чистить поэтапно разными регулярками, но послего корректного отбора парсером.
+
 for i in result_list:
     x = re.sub(r'([\w]+://)([\w\.-]+)/',r'\2',i)
     print(x)
