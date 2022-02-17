@@ -28,7 +28,6 @@ for i in responce.splitlines():
 
 # print(re.search(r'([-\w]+\.\w+[\.\w]+)', result_m))
 
-
 site = ''
 
 #
