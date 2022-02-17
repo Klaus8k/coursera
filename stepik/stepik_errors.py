@@ -30,7 +30,7 @@ def perent(child, par):
 
     else:
         for i in dic_er[child]:
-            # print('@@', i )
+            # print('@@', p )
             return perent(i, par)
 
     # return False

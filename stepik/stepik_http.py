@@ -31,8 +31,8 @@ for i in responce.splitlines():
 site = ''
 
 #
-# for i in result_m:
-#     site = re.search(r'[\w\-]+\..+', i)
+# for p in result_m:
+#     site = re.search(r'[\w\-]+\..+', p)
 #     result_list.append(site.group().rstrip('/'))
 
 set_result = set(result_list)

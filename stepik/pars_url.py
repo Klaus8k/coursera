@@ -54,9 +54,9 @@ for i in gen:
 
 write_to_file('2.txt', links)
 
-# for i in responce.splitlines():
+# for p in responce.splitlines():
 #     parc.result_m = None
-#     parc.feed(i)
+#     parc.feed(p)
 #     if parc.result_m and 'href' in parc.result_m[0]:
 #         x = parc.result_m[0][1]
 #         result_list.append(x)
@@ -68,8 +68,8 @@ write_to_file('2.txt', links)
 # x = re.findall(r'([\w]+://)([\w\.-]+)/', result_list)
 
 
-# for i in result_list:
-#     x = re.search(r'([\w]+://)([\w\.-]+)/',i)
+# for p in result_list:
+#     x = re.search(r'([\w]+://)([\w\.-]+)/',p)
 #     write_to_file(x.group(2))
 # site =''
 #

@@ -27,7 +27,7 @@ for i in a:
 # def mul5(x):
 #     return x % 5 == 0
 #
-# a = [i for i in range(31)]  # [0, 1, 2, ... , 30]
+# a = [p for p in range(31)]  # [0, 1, 2, ... , 30]
 #
 # print(list(multifilter(a, mul2, mul3, mul5)))
 # # [0, 2, 3, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30]
