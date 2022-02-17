@@ -13,4 +13,4 @@ def oper_read(name):
 if __name__ == '__main__':
     x1 = oper_read('1.txt')
     x2 = oper_read('2.txt')
-    print(match(x2,x1))
+    print(match(x1,x2))

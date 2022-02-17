@@ -1,7 +1,20 @@
-<a href="http://stepic.org/courses">
-<a href='https://stepic.org'>
-<a href='http://neerc.ifmo.ru:1345'>
-<a href="ftp://mail.ru/distib" >
-<a href="ya.ru">
-<a href="www.ya.ru">
-<a href="../skip_relative_links">
+bya-2.ru
+bya.ru
+mail-2.ru
+mail.ru
+neerc.ifmo-2.ru
+neerc.ifmo.ru
+sas-_0123d.ifmo.ru
+sasd.ifmo-2.ru
+steeeeeeepic.org
+stepic-2.org
+stepic.org
+test.com
+www.gtu.edu-2.ge
+www.gtu.edu.ge
+www.kya-2.ru
+www.kya.ru
+www.masdaya.ru
+www.mya-2.ru
+www.ya-2.ru
+www.ya.ru
