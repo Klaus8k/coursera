@@ -1,74 +1,18 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="referrer" content="unsafe-url" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffee00" />
-
-  <meta http-equiv="cache-control" content="no-cache" />
-  <meta http-equiv="expires" content="0" />
-  <title>
-    OFFERRUM
-  </title>
-  <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16" />
-  <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32" />
-  <link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
-  <link rel="manifest" href="/favicons/manifest.json" />
-
-  <!-- FONTS PRELOAD -->
-  <link defer rel="font" href="/office/fonts/of-icons.woff" type="font/woff" crossorigin="anonymous" />
-  <link rel="preload" href="/office/fonts/roboto/Roboto-Regular.woff" type="font/woff" crossorigin="anonymous"
-    as="font" />
-  <link rel="preload" href="/office/fonts/roboto/Roboto-Bold.woff" type="font/woff" crossorigin="anonymous" as="font" />
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <script type="text/javascript">
-    !function () {
-      var t = document.createElement("script");
-      t.type = "text/javascript",
-        t.async = !0,
-        t.src = "https://vk.com/js/api/openapi.js?168",
-        t.onload = function () {
-          VK.Retargeting.Init("VK-RTRG-526765-eM7S5"),
-            VK.Retargeting.Hit()
-        },
-        document.head.appendChild(t)
-    }();
-  </script>
-  <noscript>
-    <img src="https://vk.com/rtrg?p=VK-RTRG-526765-eM7S5" style="position:fixed; left:-999px;" alt="" />
-  </noscript>
-  
-<link href="/office/css/vendors.css?478fb3639c66f8b6350a" rel="stylesheet"><link href="/office/css/styles.css?478fb3639c66f8b6350a" rel="stylesheet"></head>
-
-<body>
-  <div id="app">
-    <div class="loader-wrapper">
-      <div class="loader"></div>
-    </div>
-  </div>
+Abraham van Diepenbeeck
+Abraham Roentgen
+Achenbach Andreas
+Abbey Edwin Austin
+Ackermann Max
+Abedin Zainul
+Abakanowicz Magdalena
+Abad Francesc
+Abdelke Youssef
+Abell Jenny
+Adach Adam
+Acetelli Mark
+Abraham Poincheval
+3TTMan
+Aaajiao 徐文愷
 
 
 
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157708071-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-157708071-1');
-    gtag('config', 'AW-670823588');
-  </script>
-
-  <script async src="https://fkthe.com/p.js"></script>
-<script type="text/javascript" src="/office/js/vendors.js?478fb3639c66f8b6350a"></script><script type="text/javascript" src="/office/js/bundle.js?478fb3639c66f8b6350a"></script></body>
-
-</html>
