@@ -1,9 +1,13 @@
+from contracts import contract
+# change operatorPrecedence to infix_notation for work with contract
 
-def main():
-    print(100000000000000)
+
+@contract(x='str | >=0')
+def main(x):
+    print(x+x)
 
 
 
 if __name__ == '__main__':
-    main()
+    main('-5')
 
