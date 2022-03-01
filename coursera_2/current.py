@@ -1,6 +1,6 @@
 
 def main():
-    pass
+    print(100000000000000)
 
 
 
