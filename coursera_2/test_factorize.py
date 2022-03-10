@@ -1,4 +1,3 @@
-
 class TestFactorize(unittest.TestCase):
 
     def test_wrong_types_raise_exception(self):
@@ -12,7 +11,6 @@ class TestFactorize(unittest.TestCase):
         for i in case:
             with self.subTest(x=i):
                 self.assertRaises(ValueError, factorize, i)
-
 
     def test_zero_and_one_cases(self):
         case = [1, 0]
