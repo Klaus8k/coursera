@@ -82,6 +82,7 @@ def draw_help():
 # =======================================================================================
 # Функции, отвечающие за расчет сглаживания ломаной
 # =======================================================================================
+
 def get_point(points, alpha, deg=None):
     if deg is None:
         deg = len(points) - 1
@@ -107,10 +108,7 @@ def get_knot(points, count):
         ptn.append(mul(add(points[i], points[i + 1]), 0.5))
         ptn.append(points[i + 1])
         ptn.append(mul(add(points[i + 1], points[i + 2]), 0.5))
-
         res.extend(get_points(ptn, count))
-        # print(len(res))
-    # print(ptn, 'опорные точки')
     return res
 
 
@@ -165,7 +163,8 @@ if __name__ == "__main__":
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 points.append(event.pos)
-                speeds.append((random.random() * 2, random.random() * 50))
+                speeds.append((random.random() * 2,
+                               random.random() * 50))
                 # print(points)
 
         gameDisplay.fill((0, 0, 0))
@@ -181,6 +180,6 @@ if __name__ == "__main__":
 
         pygame.display.flip()
 
-    # pygame.display.quit()
-    # pygame.quit()
+    pygame.display.quit()
+    pygame.quit()
     exit(0)
