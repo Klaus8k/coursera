@@ -7,56 +7,54 @@ import math
 
 SCREEN_DIM = (800, 600)
 
+
 # Вектор от начала координат
-class Vec2d():
-    def __init__(self, pos: set):
-        self.x = pos[0]
-        self.y = pos[1]
+class Vec2d:
+    def __init__(self, pos):
+        self.pos = pos
+        self.x = self.pos[0]
+        self.y = self.pos[1]
 
-    def __sub__(self, x, y):
+    def __sub__(self, other):
         """"возвращает разность двух векторов"""
-        return self.x[0] - self.y[0], self.x[1] - self.y[1]
+        return self.x - other.x, self.y - other.y
 
-    def __add__(self, x, y):
+    def __add__(self, other):
         """возвращает сумму двух векторов"""
-        return self.x[0] + y[0], self.x[1] + y[1]
+        return self.x + other.x, self.y + other.y
 
-    def len(self, x):
+    def __len__(self):
         """возвращает длину вектора"""
-        return math.sqrt(self.x[0] * self.x[0] + self.x[1] * self.x[1])
-    # Что то хуйня какая то
+        return int(math.sqrt(self.x ** 2 + self.y ** 2))
+
     def __mul__(self, k):
         """возвращает произведение вектора на число"""
-        return self[0] * k, self[1] * k
+        return self.x * k, self.y * k
 
-    def int_pair(self, x, y):
+    def int_pair(self):
         """возвращает пару координат, определяющих вектор (координаты точки конца вектора),
         координаты начальной точки вектора совпадают с началом системы координат (0, 0)"""
-        return self.__sub__(y, x)
+        return (int(self.x), int(self.y))
 
 
-class Polyline():
-    def __init__(self, points_obj):
-        self.points_obj = points_obj
-        self.points_obj = []
-        self.speeds = []
+class Polyline:
 
-    def add_point(self, vec: object, speed):
-        self.points_obj.append(vec)
-        self.speeds.append(speed)
+    def __init__(self):
+        self.points = []
+
+    def add_point(self, new_point: object, speeds=(0, 0)):
+        self.points.append((new_point, speeds))
 
     def set_points(self):
         """функция перерасчета координат опорных точек"""
-        points = list(map(lambda x: x, self.points_obj))
-        for p in range(len(self.points_obj)):
-            points[p] = (points[p][0] + self.speeds[p][0], points[p][1] + self.speeds[p][1])
-            if points[p][0] > SCREEN_DIM[0] or points[p][0] < 0:
-                self.speeds[p] = (- self.speeds[p][0], self.speeds[p][1])
-            if points[p][1] > SCREEN_DIM[1] or points[p][1] < 0:
-                self.speeds[p] = (self.speeds[p][0], -self.speeds[p][1])
+        for p in range(len(self.points)):
+            self.points[p][0] = self.points[p][0] + self.points[p][1]
+            if self.points[p][0][0] > SCREEN_DIM[0] or self.points[p][0][0] < 0:
+                self.points[p][1] = (- self.points[p][1], self.points[p][1])
+            if self.points[p][0][1] > SCREEN_DIM[1] or self.points[p][0][1] < 0:
+                self.points[p][1] = (self.points[p][1], - self.points[p][1])
 
-
-    def draw_points(points, style="points", width=3, color=(255, 255, 255)):
+    def draw_points(self, style="points", width=3, color=(255, 255, 255)):
         """функция отрисовки точек на экране"""
         if style == "line":
             for p_n in range(-1, len(points) - 1):
@@ -65,12 +63,31 @@ class Polyline():
                                  (int(points[p_n + 1][0]), int(points[p_n + 1][1])), width)
 
         elif style == "points":
-            for p in points:
+            for p in self.points:
+                x,y = p[0].int_pair()
+                print(x,y)
                 pygame.draw.circle(gameDisplay, color,
-                                   (int(p[0]), int(p[1])), width)
+                                   (x,y), width)
 
 
+if __name__ == '__main__':
+    pygame.init()
+    gameDisplay = pygame.display.set_mode(SCREEN_DIM)
+    clock = pygame.time.Clock()
+    pygame.display.set_caption('My')
 
+    working = True
+    x = Polyline()
 
+    while working:
+        clock.tick(10)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                working = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x.add_point(Vec2d(event.pos))
+
+        x.draw_points()
+        pygame.display.flip()
 
 
