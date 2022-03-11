@@ -6,6 +6,7 @@ import random
 import math
 
 SCREEN_DIM = (800, 600)
+FPS = 30
 
 
 # =======================================================================================
@@ -89,7 +90,7 @@ def get_point(points, alpha, deg=None):
     return add(mul(points[deg], alpha), mul(get_point(points, alpha, deg - 1), 1 - alpha))
 
 
-def get_points(base_points, count):
+def get_points(base_points, count):  # count = steps
     alpha = 1 / count
     res = []
     for i in range(count):
@@ -108,6 +109,8 @@ def get_knot(points, count):
         ptn.append(mul(add(points[i + 1], points[i + 2]), 0.5))
 
         res.extend(get_points(ptn, count))
+        # print(len(res))
+    # print(ptn, 'опорные точки')
     return res
 
 
@@ -127,9 +130,10 @@ def set_points(points, speeds):
 if __name__ == "__main__":
     pygame.init()
     gameDisplay = pygame.display.set_mode(SCREEN_DIM)
+    clock = pygame.time.Clock()
     pygame.display.set_caption("MyScreenSaver")
 
-    steps = 35
+    steps = 3
     working = True
     points = []
     speeds = []
@@ -140,6 +144,7 @@ if __name__ == "__main__":
     color = pygame.Color(0)
 
     while working:
+        clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 working = False
@@ -160,11 +165,13 @@ if __name__ == "__main__":
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 points.append(event.pos)
-                speeds.append((random.random() * 2, random.random() * 2))
+                speeds.append((random.random() * 2, random.random() * 50))
+                # print(points)
 
         gameDisplay.fill((0, 0, 0))
         hue = (hue + 1) % 360
         color.hsla = (hue, 100, 50, 100)
+
         draw_points(points)
         draw_points(get_knot(points, steps), "line", 3, color)
         if not pause:
@@ -174,6 +181,6 @@ if __name__ == "__main__":
 
         pygame.display.flip()
 
-    pygame.display.quit()
-    pygame.quit()
+    # pygame.display.quit()
+    # pygame.quit()
     exit(0)
