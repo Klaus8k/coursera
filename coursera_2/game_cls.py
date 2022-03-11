@@ -57,17 +57,16 @@ class Polyline:
     def draw_points(self, style="points", width=3, color=(255, 255, 255)):
         """функция отрисовки точек на экране"""
         if style == "line":
-            for p_n in range(-1, len(points) - 1):
+            for p_n in range(-1, len(self.points) - 1):
                 pygame.draw.line(gameDisplay, color,
-                                 (int(points[p_n][0]), int(points[p_n][1])),
-                                 (int(points[p_n + 1][0]), int(points[p_n + 1][1])), width)
+                                 self.points[p_n][0].int_pair(),
+                                 self.points[p_n+1][0].int_pair(), width)
 
         elif style == "points":
             for p in self.points:
                 x,y = p[0].int_pair()
-                print(x,y)
-                pygame.draw.circle(gameDisplay, color,
-                                   (x,y), width)
+                print(x, y)
+                pygame.draw.circle(gameDisplay, color, (x, y), width)
 
 
 if __name__ == '__main__':
@@ -80,14 +79,19 @@ if __name__ == '__main__':
     x = Polyline()
 
     while working:
-        clock.tick(10)
+        clock.tick(3)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 working = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x.add_point(Vec2d(event.pos))
 
+
+        gameDisplay.fill((0, 0, 0))
         x.draw_points()
+        if len(x.points) > 1:
+            x.draw_points(style='line')
+        print(x.points)
         pygame.display.flip()
 
 

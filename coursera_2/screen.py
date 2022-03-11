@@ -133,7 +133,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     pygame.display.set_caption("MyScreenSaver")
 
-    steps = 3
+    steps = 1
     working = True
     points = []
     speeds = []
