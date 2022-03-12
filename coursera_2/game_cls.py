@@ -6,7 +6,7 @@ import random
 import math
 
 SCREEN_DIM = (800, 600)
-FPS = 2
+FPS = 30
 
 # =======================================================================================
 # Функции, отвечающие за расчет сглаживания ломаной
@@ -109,11 +109,11 @@ class Polyline:
     def set_points(self):
         """функция перерасчета координат опорных точек"""
         for p in range(len(self.points)):
-            self.points[p][0] = self.points[p][0] + self.points[p][1]
-            if self.points[p][0].x > SCREEN_DIM[0] or self.points[p][0].x < 0:
-                self.points[p][1] = (- self.points[p][1], self.points[p][1])
-            if self.points[p][0].y > SCREEN_DIM[1] or self.points[p][0].y < 0:
-                self.points[p][1] = (self.points[p][1], - self.points[p][1])
+            self.points[p] = (self.points[p] + self.speeds[p])
+            if self.points[p].x > SCREEN_DIM[0] or self.points[p].x < 0:
+                self.speeds[p] = (- self.speeds[p].x, self.speeds[p].y)
+            if self.points[p].y > SCREEN_DIM[1] or self.points[p].y < 0:
+                self.speeds[p] = (self.speeds[p].x, - self.speeds[p].y)
 
     def draw_points(self, style="points", width=3, color=(255, 255, 255)):
         """функция отрисовки точек на экране"""
@@ -157,9 +157,8 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     pygame.display.set_caption('My')
 
-    steps = 2
+    steps = 5
     working = True
-
     show_help = False
     pause = True
     hue = 0
