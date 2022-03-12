@@ -6,7 +6,7 @@ import random
 import math
 
 SCREEN_DIM = (800, 600)
-FPS = 5
+FPS = 2
 
 # =======================================================================================
 # Функции, отвечающие за расчет сглаживания ломаной
@@ -16,7 +16,8 @@ def get_point(points, alpha, deg=None):
         deg = len(points) - 1
     if deg == 0:
         return points[0]
-    return (points[deg] * alpha) + (get_point(points, alpha, deg - 1) * (1 - alpha))
+    print(points)
+    return ((points[deg] * alpha) + (get_point(points, alpha, deg - 1) * (1 - alpha)))
 
 
 def get_points(base_points, count):  # count = steps
@@ -28,15 +29,15 @@ def get_points(base_points, count):  # count = steps
 
 
 def get_knot(points, count):
-    k = 0.5
     if len(points) < 3:
         return []
     res = []
     for i in range(-2, len(points) - 2):
         ptn = []
-        ptn.append((points[i] + points[i + 1]) * k)
+
+        ptn.append((points[i] + points[i + 1]) * 0.5)
         ptn.append(points[i + 1])
-        ptn.append((points[i + 1] + points[i + 2]) * k)
+        ptn.append((points[i + 1] + points[i + 2]) * 0.5)
         res.extend(get_points(ptn, count))
     return res
 
@@ -70,13 +71,15 @@ class Vec2d:
 
     def __sub__(self, other):
         """"возвращает разность двух векторов"""
-        self.pos = (self.x - other.x, self.y - other.y)
-        return self
+
+        return self.x - other.x, self.y - other.y
 
     def __add__(self, other):
         """возвращает сумму двух векторов"""
-        self.pos = (self.x + other.x, self.y + other.y)
-        return self
+        pos = self.x + other.x, self.y + other.y
+        sum_vec = Vec2d(pos)
+        return sum_vec
+
 
     def __len__(self):
         """возвращает длину вектора"""
@@ -84,8 +87,8 @@ class Vec2d:
 
     def __mul__(self, k):
         """возвращает произведение вектора на число"""
-        self.pos = (self.x * k, self.y * k)
-        return self
+        pos = (self.x * k, self.y * k)
+        return Vec2d(pos)
 
     def int_pair(self):
         """возвращает пару координат, определяющих вектор (координаты точки конца вектора),
@@ -97,9 +100,11 @@ class Polyline:
 
     def __init__(self):
         self.points = []
+        self.speeds = []
 
-    def add_point(self, new_point: object, speeds=(0, 0)):
-        self.points.append((new_point, speeds))
+    def add_point(self, new_point, speeds=(0,0)):
+        self.points.append(Vec2d(new_point))
+        self.speeds.append(Vec2d(speeds))
 
     def set_points(self):
         """функция перерасчета координат опорных точек"""
@@ -115,6 +120,7 @@ class Polyline:
         if style == "line":
             points_line = list(map(lambda x: x[0], self.points))
             for p_n in range(-1, len(points_line) - 1):
+
                 pygame.draw.line(gameDisplay, color,
                                  points_line[p_n][0].int_pair(),
                                  points_line[p_n+1][0].int_pair(), width)
@@ -126,25 +132,23 @@ class Polyline:
 
 class Knot(Polyline):
 
-    def reshape(self, step):
-        p_n = list(map(lambda x: x[0], self.points))
-        print(p_n)
-        points_line = get_knot(p_n, count=step)
-        Knot.draw_line(points_line)
-
-    @staticmethod
-    def draw_line(points_line, width=3, color=(255, 255, 255)):
-        for p_n in range(-1, len(points_line) - 1):
-            print(points_line[p_n].int_pair())
-            pygame.draw.line(gameDisplay, color,
-                             points_line[p_n].int_pair(),
-                             points_line[p_n + 1].int_pair(), width)
+    def draw_points(self, steps=1, style="points", width=3, color=(255, 255, 255)):
+        """функция отрисовки точек на экране"""
+        if style == "line":
+            points_draw = list(map(lambda x: x, self.points))
+            points = get_knot(points_draw, count=steps)
 
 
+            for p_n in range(-1, len(points) - 1):
+                print(points[p_n].int_pair())
+                pygame.draw.line(gameDisplay, color,
+                                 points[p_n].int_pair(),
+                                 points[p_n + 1].int_pair(), width)
 
-
-
-
+        elif style == "points":
+            for p in self.points:
+                x,y = p.int_pair()
+                pygame.draw.circle(gameDisplay, color, (x, y), width)
 
 
 if __name__ == '__main__':
@@ -153,7 +157,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     pygame.display.set_caption('My')
 
-    steps = 5
+    steps = 2
     working = True
 
     show_help = False
@@ -185,9 +189,8 @@ if __name__ == '__main__':
                     steps -= 1 if steps > 1 else 0
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                speeds.append((random.random() * 2,
-                               random.random() * 50))
-                points.add_point(Vec2d(event.pos), speeds)
+                speeds = (random.random() * 2,random.random() * 2)
+                points.add_point(event.pos, speeds)
 
 
 
@@ -196,11 +199,9 @@ if __name__ == '__main__':
         color.hsla = (hue, 100, 50, 100)
 
         points.draw_points()
-        # Перерисовка со сглаживанием
-        # draw_points(get_knot(points, steps), "line", 3, color)
-        points.reshape(steps)
+        points.draw_points(steps, style='line', width=3, color=color)
         if not pause:
-            points.reshape(steps)
+            points.set_points()
         if show_help:
             draw_help()
 

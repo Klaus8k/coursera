@@ -84,6 +84,7 @@ def draw_help():
 # =======================================================================================
 
 def get_point(points, alpha, deg=None):
+    print(deg, ' --- deg')
     if deg is None:
         deg = len(points) - 1
     if deg == 0:
@@ -131,7 +132,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     pygame.display.set_caption("MyScreenSaver")
 
-    steps = 1
+    steps = 2
     working = True
     points = []
     speeds = []
