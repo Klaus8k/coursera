@@ -71,46 +71,22 @@ class Polyline:
 
         elif style == "points":
             for p in self.points:
-                x, y = p.int_pair()
+                x, y = p[0].int_pair()
                 pygame.draw.circle(gameDisplay, color, (x, y), width)
 
 
 class Knot(Polyline):
 
-    @staticmethod
-    def get_point(points, alpha, deg=None):
-        if deg is None:
-            deg = len(points) - 1
-        if deg == 0:
-            return points[0]
-        return (points[deg] * alpha) + (Knot.get_point(points, alpha, deg - 1) * (1 - alpha))
-
-    @staticmethod
-    def get_points(base_points, count):  # count = steps
-        alpha = 1 / count
-        res = []
-        for i in range(count):
-            res.append(Knot.get_point(base_points, i * alpha))
-        return res
-
-    def get_knot(self, count):
-        points = self.points
-        if len(points) < 3:
-            return []
-        res = []
-        for i in range(-2, len(points) - 2):
-            ptn = []
-            ptn.append((points[i] + points[i + 1]) * 0.5)
-            ptn.append(points[i + 1])
-            ptn.append((points[i + 1] + points[i + 2]) * 0.5)
-            res.extend(Knot.get_points(ptn, count))
-        return res
+    def get_points(self):
+        """Возвращает опорные точки"""
+        points_draw = list(map(lambda x: x, self.points))
+        return points_draw
 
     @staticmethod
     def draw_points(points, style="points", width=3, color=(255, 255, 255)):
         """метод отрисовки точек на экране"""
-
         if style == "line":
+
             for p_n in range(-1, len(points) - 1):
                 pygame.draw.line(gameDisplay, color,
                                  points[p_n].int_pair(),
@@ -119,6 +95,38 @@ class Knot(Polyline):
             for p in points:
                 x, y = p.int_pair()
                 pygame.draw.circle(gameDisplay, color, (x, y), width)
+
+
+# =======================================================================================
+# Функции, отвечающие за расчет сглаживания ломаной
+# =======================================================================================
+def get_point(points, alpha, deg=None):
+    if deg is None:
+        deg = len(points) - 1
+    if deg == 0:
+        return points[0]
+    return (points[deg] * alpha) + (get_point(points, alpha, deg - 1) * (1 - alpha))
+
+
+def get_points(base_points, count):  # count = steps
+    alpha = 1 / count
+    res = []
+    for i in range(count):
+        res.append(get_point(base_points, i * alpha))
+    return res
+
+
+def get_knot(points, count):
+    if len(points) < 3:
+        return []
+    res = []
+    for i in range(-2, len(points) - 2):
+        ptn = []
+        ptn.append((points[i] + points[i + 1]) * 0.5)
+        ptn.append(points[i + 1])
+        ptn.append((points[i + 1] + points[i + 2]) * 0.5)
+        res.extend(get_points(ptn, count))
+    return res
 
 
 def draw_help():
@@ -187,11 +195,8 @@ if __name__ == '__main__':
         hue = (hue + 1) % 360
         color.hsla = (hue, 100, 50, 100)
 
-        points.draw_points(points.points)
-
-        new_knots = points.get_knot(steps)
-        if new_knots:
-            points.draw_points(new_knots, style="line", width=3, color=color)
+        points.draw_points(points.get_points())
+        points.draw_points(get_knot(points.get_points(), steps), style='line', width=3, color=color)
         if not pause:
             points.set_points()
         if show_help:
