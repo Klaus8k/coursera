@@ -1,10 +1,15 @@
-ma = [[0 for i in range(10)] for _ in range(10)]
-ma[5][7] = 4
-ma[5][5] = -4
-x = []
-for i in range(len(ma)):
-    x=[]
-    for j in range(len(ma)):
-        x.append(ma[i][j])
+class MappingAdapter:
+    def __init__(self, adaptee):
+        self.adaptee = adaptee
 
-    print(x)
+    def lighten(self, grid):
+        self.adaptee.set_dim(len(grid[0]), len(grid))
+
+        for i in range(len(grid)):
+            for j in range(len(grid)):
+                field = grid[i][j]
+                if field == 1:
+                    self.adaptee.set_lights(field)
+                elif field == -1:
+                    self.adaptee.set_obstacles(field)
+        return self.adaptee.generate_lights()
