@@ -33,7 +33,7 @@ class Hero:
         return self.negative_effects.copy()
 
     def get_stats(self):
-        return self.stats
+        return self.stats.copy()
 
 
 # =============================================================================
@@ -44,90 +44,133 @@ class Hero:
 # решения
 
 
-class AbstractEffect(Hero):
+class AbstractEffect(ABC, Hero):
     def __init__(self, base):
         self.base = base
 
+    @abstractmethod
     def get_positive_effects(self):
-        return self.base.positive_effects
+        return self.base.get_positive_effects()
 
+    @abstractmethod
     def get_negative_effects(self):
-        return self.base.negative_effects
+        return self.base.get_negative_effects()
 
-    # def get_stats(self):
-    #     return self.stats.copy()
+    @abstractmethod
+    def get_stats(self):
+        return self.base.get_stats()
 
 
 class AbstractPositive(AbstractEffect):
     def __init__(self, base):
         self.base = base
 
+    @abstractmethod
     def get_positive_effects(self):
-        return self.base.positive_effects
+        return self.base.get_positive_effects()
 
+    def get_negative_effects(self):
+        return self.base.get_negative_effects()
+
+    @abstractmethod
+    def get_stats(self):
+        return self.base.get_stats()
 
 class AbstractNegative(AbstractEffect):
     def __init__(self, base):
         self.base = base
 
+    def get_positive_effects(self):
+        return self.base.get_positive_effects()
+    @abstractmethod
     def get_negative_effects(self):
-        return self.base.negative_effects
+        return self.base.get_negative_effects()
+    @abstractmethod
+    def get_stats(self):
+        return self.base.get_stats()
 
 
 class Berserk(AbstractPositive):
     def __init__(self, base):
         self.base = base
-        self.stats = self.base.get_stats()
-        self.positive_effects = self.base.positive_effects
-        self.negative_effects = self.base.negative_effects
-        self.stats['Strength'] += 7
-        self.stats['Endurance'] += 7
-        self.stats['Agility'] += 7
-        self.stats['Luck'] += 7
-        for i in ('Charisma', 'Perception', 'Intelligence'):
-            self.stats[i] -= 3
-        self.stats['HP'] += 50
-        self.positive_effects.append('Berserk')
 
     def get_stats(self):
-        return self.stats
+        stats = self.base.get_stats()
+        stats['Strength'] += 7
+        stats['Endurance'] += 7
+        stats['Agility'] += 7
+        stats['Luck'] += 7
+        for i in ('Charisma', 'Perception', 'Intelligence'):
+            stats[i] -= 3
+        stats['HP'] += 50
+        return stats
 
+    def get_positive_effects(self):
+        positive_effects = self.base.get_positive_effects()
+        positive_effects.append('Berserk')
+        return positive_effects
 
 class Blessing(AbstractPositive):
     def __init__(self, base):
         self.base = base
-        for key in self.base.stats.keys:
+
+    def get_stats(self):
+        stats = self.base.get_stats()
+        for key in stats.keys():
             if len(key) > 2:
-                self.base.stats[key] += 2
-        self.base.positive_effects.append('Blessing')
+                stats[key] += 2
+        return stats
+
+    def get_positive_effects(self):
+        positive_effects = self.base.get_positive_effects()
+        positive_effects.append('Blessing')
+        return positive_effects
 
 
 class Weakness(AbstractNegative):
     def __init__(self, base):
         self.base = base
-        for i in ('Strength', 'Endurance', 'Agility'):
-            self.base.stats[i] -= 4
-        self.base.negative_effects.append('Weakness')
 
+    def get_stats(self):
+        stats = self.base.get_stats()
+        for i in ('Strength', 'Endurance', 'Agility'):
+            stats[i] -= 4
+        return stats
+
+    def get_negative_effects(self):
+        negative_effects = self.base.get_negative_effects()
+        negative_effects.append('Weakness')
+        return negative_effects
 
 class EvilEye(AbstractNegative):
     def __init__(self, base):
         self.base = base
-        self.base.stats['Luck'] -= 10
-        self.base.negative_effects.append('EvilEye')
+
+    def get_stats(self):
+        stats = self.base.get_stats()
+        stats['Luck'] -= 10
+        return stats
+
+    def get_negative_effects(self):
+        negative_effects = self.base.get_negative_effects()
+        negative_effects.append('EvilEye')
+        return negative_effects
 
 class Curse(AbstractNegative):
     def __init__(self, base):
         self.base = base
-        self.stats = self.base.stats
-        self.negative_effects = self.base.negative_effects
-        for key in self.stats.keys():
-            if len(key) > 2:
-                self.base.stats[key] -= 2
-        self.negative_effects.append('Curse')
 
     def get_stats(self):
-        return self.stats
+        stats = self.base.get_stats()
+        for key in stats.keys():
+            if len(key) > 2:
+                stats[key] -= 2
+        return stats
+
+    def get_negative_effects(self):
+        negative_effects = self.base.get_negative_effects()
+        negative_effects.append('Curse')
+        return negative_effects
 
 
 # =============================================================================
@@ -174,7 +217,6 @@ if __name__ == '__main__':
     brs2 = Berserk(brs1)
     # наложение эффекта Curse
     cur1 = Curse(brs2)
-    print(brs1.stats)
     # проверим правильность изменения характеристик
     assert cur1.get_stats() == {'HP': 228,
                                 'MP': 42,
@@ -193,7 +235,6 @@ if __name__ == '__main__':
     # снятие эффекта Berserk
     cur1.base = brs1
     # проверим правильность изменения характеристик
-    print(brs2.get_stats())
     assert cur1.get_stats() == {'HP': 178,
                                 'MP': 42,
                                 'SP': 100,

@@ -59,10 +59,12 @@ class CardPayment(AbstractDeliveryAction):
 # а возвращаем его изменененную копию, так происходит магия декораторов
 # создадим заказ
 order = Delivery()
+
 print(order.get_time_delivery())
 # будем применять действия к заказу, в зависимости от желания
 # заказчика и действующих акций
 order_expr = ExpressDelivery(order)
+print(order_expr.__dict__)
 print(order_expr.get_time_delivery())
 order_expr_spec = SpecialOffer(order_expr)
 print(order_expr_spec.get_time_delivery())
@@ -71,6 +73,7 @@ print(order_total.get_time_delivery())
 
 # уберем экспресс доставку, если вдруг заказчик передумал
 order_expr_spec.base = order_expr_spec.base.base
+print(order_expr_spec.__dict__)
 print(order_total.get_time_delivery())
 # вывод справа в окне терминала -->
 # такая реализация позволяет без проблем добавлять новые действия
