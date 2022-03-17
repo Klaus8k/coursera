@@ -9,8 +9,8 @@ class MappingAdapter:
             for j in range(len(self.adaptee.dim)):
                 field = self.adaptee.dim[i][j]
                 if field == 1:
-                    self.adaptee.set_lights(field)
+                    self.adaptee.set_lights(i,j)
                 elif field == -1:
-                    self.adaptee.set_obstacles(field)
+                    self.adaptee.set_obstacles(i,j)
         l_map = self.adaptee.generate_lights()
         return l_map
