@@ -1,39 +1,39 @@
 from abc import ABC, abstractmethod
-import adapter
 
-class System:
+
+class ObservableEngine(Engine):
     def __init__(self):
-        self.map = self.grid = [[0 for i in range(10)] for _ in range(5)]
-        self.map[3][4] = 1  # Источники света
-        self.map[3][2] = -1  # Стены
+        self.subscribers = set()
 
-    def get_lightening(self, light_mapper):
-        self.lightmap = light_mapper.lighten(self.map)
+    def subscribe(self, name):
+        self.subscribers.add(name)
+
+    def unsubscribe(self, name):
+        self.subscribers.remove(name)
+
+    def notify(self, achiv: dict):
+        for i in self.subscribers:
+            i.update(achiv)
 
 
-class Light:
-    def __init__(self, dim):
-        self.dim = dim
-        self.grid = [[0 for i in range(dim[0])] for _ in range(dim[1])]
-        self.lights = []
-        self.obstacles = []
+class AbstractObserver(ABC):
+    @abstractmethod
+    def update(self):
+        pass
 
-    def set_dim(self, dim):
-        self.dim = dim
-        self.grid = [[0 for i in range(dim[0])] for _ in range(dim[1])]
 
-    def set_lights(self, lights):
-        self.lights = lights
-        self.generate_lights()
+class ShortNotificationPrinter(AbstractObserver):
+    def __init__(self):
+        self.achievements = set()
 
-    def set_obstacles(self, obstacles):
-        self.obstacles = obstacles
-        self.generate_lights()
+    def update(self, achiv):
+        self.achievements.add(achiv['title'])
 
-    def generate_lights(self):
-        return self.grid.copy()
 
-s = System()
-dim = (len(s.map[0]), len(s.map))
-x = Light(dim)
-r = s.get_lightening(adapter.MappingAdapter(x))
+class FullNotificationPrinter(AbstractObserver):
+    def __init__(self):
+        self.achievements = []
+
+    def update(self, achiv):
+        if achiv not in self.achievements:
+            self.achievements.append(achiv)
