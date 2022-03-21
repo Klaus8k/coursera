@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+
+
 class System:
     def __init__(self):
         self.map = self.grid = [[0 for i in range(30)] for _ in range(20)]
