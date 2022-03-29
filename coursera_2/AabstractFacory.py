@@ -6,20 +6,20 @@ class AbstractLevel:
 
     @classmethod
     def get_map(Cls):
-        return Cls
+        return Cls.Map()
 
     @classmethod
     def get_objects(Cls):
-        return Cls
-
+        return Cls.Objects()
 
 
 class EasyLevel(AbstractLevel):
 
 
-    class EasyMap:
+    class Map:
 
         def __init__(self):
+            # print('map')
             self._map = [[0 for j in range(5)] for i in range(5)]
             for i in range(5):
                 for j in range(5):
@@ -31,9 +31,10 @@ class EasyLevel(AbstractLevel):
                         self._map[j][i] = random.randint(0, 2)
 
         def get_map(self):
+            # print(self._map)
             return self._map
 
-    class EasyObjects:
+    class Objects:
 
         def __init__(self):
             # размещаем переход на след. уровень
@@ -53,12 +54,17 @@ class EasyLevel(AbstractLevel):
                             coord = (random.randint(1, 3), random.randint(1, 3))
 
                 self.objects.append((obj_name, coord))
+            # print(self.objects)
 
             return self.objects
 
 
+
+
 class MediumLevel(AbstractLevel):
-    class MediumMap:
+
+
+    class Map:
 
         def __init__(self):
             self._map = [[0 for j in range(8)] for i in range(8)]
@@ -74,7 +80,7 @@ class MediumLevel(AbstractLevel):
         def get_map(self):
             return self._map
 
-    class MediumObjects:
+    class Objects:
 
         def __init__(self):
             # размещаем переход на след. уровень
@@ -99,7 +105,8 @@ class MediumLevel(AbstractLevel):
 
 
 class HardLevel(AbstractLevel):
-    class HardMap:
+
+    class Map:
 
         def __init__(self):
             self._map = [[0 for j in range(10)] for i in range(10)]
@@ -115,7 +122,7 @@ class HardLevel(AbstractLevel):
         def get_map(self):
             return self._map
 
-    class HardObjects:
+    class Objects:
 
         def __init__(self):
             # размещаем переход на след. уровень
@@ -142,11 +149,3 @@ class HardLevel(AbstractLevel):
 
             return self.objects
 
-def create_level(factory):
-    level = factory()
-    return level
-
-
-if __name__ == '__main__':
-    x = create_level(EasyLevel)
-    print(x.get_objects())
