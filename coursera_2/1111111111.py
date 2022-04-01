@@ -1,117 +1,54 @@
-QUEST_SPEAK, QUEST_HUNT, QUEST_CARRY = "QSPEAK", "QHUNT", "QCARRY"
+import yaml
+import random
+
+Levels = yaml.load(
+'''
+levels:
+    - !easy_level {}
+    # - !medium_level
+    #     enemy: ['rat']
+    # - !hard_level
+    #     enemy:
+    #         - rat
+    #         - snake
+    #         - dragon
+    #     enemy_count: 10
+''')
+class EasyLevel(yaml.YAMLObject):
+    yaml_tag = u'!easy_level'
+
+    class Map:
+        def __init__(self):
+            self.Map = [[0 for _ in range(5)] for _ in range(5)]
+            for i in range(5):
+                for j in range(5):
+                    if i == 0 or j == 0 or i == 4 or j == 4:
+                        self.Map[j][i] = -1  # граница карты
+                    else:
+                        self.Map[j][i] = random.randint(0, 2)  # случайная характеристика области
+
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+        def __init__(self):
+            self.objects = [('next_lvl', (2, 2))]
+            self.config = {}
+
+        def get_objects(self, _map):
+            for obj_name in ['rat']:
+                coord = (random.randint(1, 3), random.randint(1, 3))
+                intersect = True
+                while intersect:
+                    intersect = False
+                    for obj in self.objects:
+                        if coord == obj[1]:
+                            intersect = True
+                            coord = (random.randint(1, 3), random.randint(1, 3))
+
+                self.objects.append((obj_name, coord))
+
+            return self.objects
 
 
-class Character:
-
-    def __init__(self):
-        self.name = "Nagibator"
-        self.xp = 0
-        self.passed_quests = set()
-        self.taken_quests = set()
-
-
-class Event:
-
-    def __init__(self, kind):
-        self.kind = kind
-
-
-class NullHandler:
-
-    def __init__(self, successor=None):
-        self.__successor = successor
-
-    def handle(self, char, event):
-        if self.__successor is not None:
-            self.__successor.handle(char, event)
-
-
-class HandleQSpeak(NullHandler):
-
-    def handle(self, char, event):
-        if event.kind == QUEST_SPEAK:
-            xp = 100
-            quest_name = "Поговорить с фермером"
-            if event.kind not in (char.passed_quests | char.taken_quests):
-                print(f"Квест получен: \"{quest_name}\"")
-                char.taken_quests.add(event.kind)
-            elif event.kind in char.taken_quests:
-                print(f"Квест сдан: \"{quest_name}\"")
-                char.passed_quests.add(event.kind)
-                char.taken_quests.remove(event.kind)
-                char.xp += xp
-        else:
-            print("Передаю обработку дальше QUEST_SPEAK")
-            super().handle(char, event)
-
-
-class HandleQHunt(NullHandler):
-
-    def handle(self, char, event):
-        if event.kind == QUEST_HUNT:
-            xp = 300
-            quest_name = "Охота на крыс"
-            if event.kind not in (char.passed_quests | char.taken_quests):
-                print(f"Квест получен: \"{quest_name}\"")
-                char.taken_quests.add(event.kind)
-            elif event.kind in char.taken_quests:
-                print(f"Квест сдан: \"{quest_name}\"")
-                char.passed_quests.add(event.kind)
-                char.taken_quests.remove(event.kind)
-                char.xp += xp
-        else:
-            print("Передаю обработку дальше QUEST_HUNT")
-            super().handle(char, event)
-
-
-class HandleQCarry(NullHandler):
-
-    def handle(self, char, event):
-        if event.kind == QUEST_CARRY:
-            xp = 200
-            quest_name = "Принести дрова из сарая"
-            if event.kind not in (char.passed_quests | char.taken_quests):
-                print(f"Квест получен: \"{quest_name}\"")
-                char.taken_quests.add(event.kind)
-            elif event.kind in char.taken_quests:
-                print(f"Квест сдан: \"{quest_name}\"")
-                char.passed_quests.add(event.kind)
-                char.taken_quests.remove(event.kind)
-                char.xp += xp
-        else:
-            print("Передаю обработку дальше QUEST_CARRY")
-            super().handle(char, event)
-
-
-class QuestGiver:
-
-    def __init__(self):
-        self.handlers = HandleQSpeak(HandleQHunt(HandleQCarry(NullHandler())))
-        self.events = []
-
-    def add_event(self, event):
-        self.events.append(event)
-
-    def handle_quests(self, char):
-        for event in self.events:
-            self.handlers.handle(char, event)
-
-
-if __name__ == '__main__':
-
-    events = [Event(QUEST_CARRY), Event(QUEST_HUNT), Event(QUEST_SPEAK)]
-
-    quest_giver = QuestGiver()
-
-    for event in events:
-        quest_giver.add_event(event)
-
-    player = Character()
-
-    quest_giver.handle_quests(player)
-    print()
-    player.taken_quests = {QUEST_CARRY, QUEST_SPEAK}
-    quest_giver.handle_quests(player)
-    print()
-    quest_giver.handle_quests(player)
-
+loader = lo
