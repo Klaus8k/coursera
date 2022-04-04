@@ -80,6 +80,9 @@ class MapFactory(yaml.YAMLObject):
         # FIXME
         # get _map and _obj
 
+        _map = cls.Map()
+        _obj = cls.Objects()
+
         return {'map': _map, 'obj': _obj}
 
 
@@ -209,6 +212,86 @@ class RandomMap(MapFactory):
 
 # FIXME
 # add classes for YAML !empty_map and !special_map{}
+##########################
+class EmptyMap(MapFactory):
+    yaml_tag = "!empty_map"
+
+    class Map:
+
+        def __init__(self):
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+            for i in range(41):
+                for j in range(41):
+                    if i == 0 or j == 0 or i == 40 or j == 40:
+                        self.Map[j][i] = wall
+                    else:
+                        self.Map[j][i] = [wall, floor1, floor2, floor3, floor1,
+                                          floor2, floor3, floor1, floor2][random.randint(0, 8)]
+
+        def get_map(self):
+            return self.Map
+
+
+    class Objects:
+
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            for obj_name in ['rat']:
+                coord = (random.randint(1, 3), random.randint(1, 3))
+                intersect = True
+                while intersect:
+                    intersect = False
+                    for obj in self.objects:
+                        if coord == obj[1]:
+                            intersect = True
+                            coord = (random.randint(1, 3), random.randint(1, 3))
+
+                self.objects.append((obj_name, coord))
+
+            return self.objects
+
+class SpecialMap(MapFactory):
+    yaml_tag = "!special_map"
+
+    class Map:
+
+        def __init__(self):
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+            for i in range(41):
+                for j in range(41):
+                    if i == 0 or j == 0 or i == 40 or j == 40:
+                        self.Map[j][i] = wall
+                    else:
+                        self.Map[j][i] = [wall, floor1, floor2, floor3, floor1,
+                                          floor2, floor3, floor1, floor2][random.randint(0, 8)]
+
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            for obj_name in ['rat']:
+                coord = (random.randint(1, 3), random.randint(1, 3))
+                intersect = True
+                while intersect:
+                    intersect = False
+                    for obj in self.objects:
+                        if coord == obj[1]:
+                            intersect = True
+                            coord = (random.randint(1, 3), random.randint(1, 3))
+
+                self.objects.append((obj_name, coord))
+
+            return self.objects
+
+
+
 
 wall = [0]
 floor1 = [0]

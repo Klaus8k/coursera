@@ -17,6 +17,8 @@ class Interactive(ABC):
     def interact(self, engine, hero):
         pass
 
+class AbstractObject(ABC):
+    pass
 
 class Ally(AbstractObject, Interactive):
 
