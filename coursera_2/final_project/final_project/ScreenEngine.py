@@ -34,6 +34,7 @@ class ScreenHandle(pygame.Surface):
 ####################  pygame.Surface   ##################################
     def connect_engine(self, engine):
         self.game_engine = engine
+        return self.game_engine
         # print(self, engine.__dict__)
         # return self.draw(engine)
         # return self.engine
@@ -43,12 +44,14 @@ class GameSurface(ScreenHandle):
 
     def connect_engine(self, engine):
         self.game_engine = engine
-
+        return self.game_engine
         # FIXME save engine and send it to next in chain !!! Здесь цепочка обязанностей должна быть.
 
 
     def draw_hero(self):
-        print(self.game_engine.hero.__dict__)
+        # self.game_engine.draw(self)
+        # print(self.game_engine.hero)
+        # print(self.game_engine.objects)
         self.blit(self.game_engine.hero.sprite,self.game_engine.hero.position)
 
     def draw_map(self):
@@ -88,8 +91,6 @@ class GameSurface(ScreenHandle):
         min_x = 0
         min_y = 0
 
-    ## в game_engine нет кортежа с координатами. неправильный возврат у метода коннект движок
-
         self.draw_map()
         # print(self.game_engine.objects)
         for obj in self.game_engine.objects:
@@ -106,7 +107,9 @@ class ProgressBar(ScreenHandle):
         super().__init__(*args, **kwargs)
         self.fill(colors["wooden"])
 
-    # def connect_engine(self, engine):
+    def connect_engine(self, engine):
+        self.game_engine = engine
+        return self.game_engine
         # FIXME save engine and send it to next in chain
 
     def draw(self, canvas):
