@@ -27,6 +27,7 @@ def reload_game(engine, hero):
     _map = generator['map'].get_map()
     engine.load_map(_map)
     engine.add_objects(generator['obj'].get_objects(_map))
+    # print(engine.objects,'- objects')
     engine.add_hero(hero)
 
 
@@ -238,17 +239,26 @@ class EmptyMap(MapFactory):
             self.objects = []
 
         def get_objects(self, _map):
-            for obj_name in ['rat']:
-                coord = (random.randint(1, 3), random.randint(1, 3))
-                intersect = True
-                while intersect:
-                    intersect = False
-                    for obj in self.objects:
-                        if coord == obj[1]:
+            for obj_name in object_list_prob['enemies']:
+                prop = object_list_prob['enemies'][obj_name]
+                for i in range(random.randint(0, 5)):
+                    coord = (random.randint(1, 30), random.randint(1, 22))
+                    intersect = True
+                    while intersect:
+                        intersect = False
+                        if _map[coord[1]][coord[0]] == wall:
                             intersect = True
-                            coord = (random.randint(1, 3), random.randint(1, 3))
+                            coord = (random.randint(1, 39),
+                                     random.randint(1, 39))
+                            continue
+                        for obj in self.objects:
+                            if coord == obj.position or coord == (1, 1):
+                                intersect = True
+                                coord = (random.randint(1, 39),
+                                         random.randint(1, 39))
 
-                self.objects.append((obj_name, coord))
+                    self.objects.append(Objects.Enemy(
+                        prop['sprite'], prop, prop['experience'], coord))
 
             return self.objects
 

@@ -33,7 +33,7 @@ class ScreenHandle(pygame.Surface):
     # FIXME connect_engine
 ####################  pygame.Surface   ##################################
     def connect_engine(self, engine):
-        pass
+        self.game_engine = engine
         # print(self, engine.__dict__)
         # return self.draw(engine)
         # return self.engine
@@ -42,26 +42,17 @@ class ScreenHandle(pygame.Surface):
 class GameSurface(ScreenHandle):
 
     def connect_engine(self, engine):
-        ################
-        # import ipdb;
-        # ipdb.set_trace(context=5)
-        #####################
         self.game_engine = engine
-        # print(self.game_engine.hero.__dict__)
-        # return self.game_engine
-
-        # for i in engine.map:
-        #     poly = i[0][0]
-        #     print(poly)
 
         # FIXME save engine and send it to next in chain !!! Здесь цепочка обязанностей должна быть.
 
 
     def draw_hero(self):
-        self.game_engine.hero.draw(self)
+        print(self.game_engine.hero.__dict__)
+        self.blit(self.game_engine.hero.sprite,self.game_engine.hero.position)
 
     def draw_map(self):
-
+        # print(self.game_engine.map[0])
         # FIXME || calculate (min_x,min_y) - left top corner
 
         min_x = 0
@@ -100,6 +91,7 @@ class GameSurface(ScreenHandle):
     ## в game_engine нет кортежа с координатами. неправильный возврат у метода коннект движок
 
         self.draw_map()
+        # print(self.game_engine.objects)
         for obj in self.game_engine.objects:
             self.blit(obj.sprite[0], ((obj.position[0] - min_x) * self.game_engine.sprite_size,
                                       (obj.position[1] - min_y) * self.game_engine.sprite_size))

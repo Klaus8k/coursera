@@ -126,6 +126,13 @@ class Effect(Hero):
     def apply_effect(self):
         pass
 
+# Класс врагов, насыщается в картах
+class Enemy(Creature):
+    def __init__(self, icon, stats, experience, position):
+        self.sprite = icon
+        self.stats = stats
+        self.position = position
+        self.experience = experience
 
 # FIXME
 # add classes
