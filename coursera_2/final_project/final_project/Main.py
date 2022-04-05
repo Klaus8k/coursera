@@ -51,6 +51,7 @@ def create_game(sprite_size, is_new):
     Logic.GameEngine.sprite_size = sprite_size
 
 ######################### DRAWER #########################
+
     drawer.connect_engine(engine)
 
     iteration = 0

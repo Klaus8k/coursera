@@ -30,29 +30,25 @@ class ScreenHandle(pygame.Surface):
             canvas.blit(self.successor, self.next_coord)
             self.successor.draw(canvas)
 
-    # FIXME connect_engine
-####################  pygame.Surface   ##################################
+    # FIXME connect_engine!!!!!!!!!!!!!!!!!!!!!!!!!??????????????
+
     def connect_engine(self, engine):
-        self.game_engine = engine
-        return self.game_engine
-        # print(self, engine.__dict__)
-        # return self.draw(engine)
-        # return self.engine
+        if self.successor is not None:
+            return self.successor.connect_engine(engine)
 
 
 class GameSurface(ScreenHandle):
 
     def connect_engine(self, engine):
         self.game_engine = engine
-        return self.game_engine
+        if self.successor is not None:
+            return self.successor.connect_engine(engine)
         # FIXME save engine and send it to next in chain !!! Здесь цепочка обязанностей должна быть.
 
 
     def draw_hero(self):
-        # self.game_engine.draw(self)
-        # print(self.game_engine.hero)
-        # print(self.game_engine.objects)
-        self.blit(self.game_engine.hero.sprite,self.game_engine.hero.position)
+        # AttributeError: 'Hero' object has no attribute 'draw'
+        self.game_engine.hero.draw(self)
 
     def draw_map(self):
         # print(self.game_engine.map[0])
@@ -107,9 +103,11 @@ class ProgressBar(ScreenHandle):
         super().__init__(*args, **kwargs)
         self.fill(colors["wooden"])
 
+
     def connect_engine(self, engine):
-        self.game_engine = engine
-        return self.game_engine
+        self.engine = engine
+        if self.successor is not None:
+            return self.successor.connect_engine(engine)
         # FIXME save engine and send it to next in chain
 
     def draw(self, canvas):

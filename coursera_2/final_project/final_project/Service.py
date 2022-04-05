@@ -354,6 +354,7 @@ def service_init(sprite_size, full=True):
         prop['sprite'][0] = create_sprite(
             os.path.join(ENEMY_TEXTURE, prop_tmp['sprite'][0]), sprite_size)
 
+
     file.close()
 
     if full:
