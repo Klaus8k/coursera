@@ -24,7 +24,7 @@ base_stats = {
     "luck": 5
 }
 
-import ipdb; ipdb.set_trace()
+# import ipdb; ipdb.set_trace(context=5)
 def create_game(sprite_size, is_new):
     global hero, engine, drawer, iteration
     if is_new:
@@ -50,6 +50,7 @@ def create_game(sprite_size, is_new):
 
     Logic.GameEngine.sprite_size = sprite_size
 
+######################### DRAWER #########################
     drawer.connect_engine(engine)
 
     iteration = 0

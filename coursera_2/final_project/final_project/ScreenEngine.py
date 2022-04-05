@@ -1,5 +1,6 @@
 import pygame
 import collections
+import time
 
 colors = {
     "black": (0, 0, 0, 255),
@@ -30,18 +31,30 @@ class ScreenHandle(pygame.Surface):
             self.successor.draw(canvas)
 
     # FIXME connect_engine
+####################  pygame.Surface   ##################################
     def connect_engine(self, engine):
-        self.engine =engine
-        return self.engine
+        pass
+        # print(self, engine.__dict__)
+        # return self.draw(engine)
+        # return self.engine
 
 
 class GameSurface(ScreenHandle):
 
     def connect_engine(self, engine):
+        ################
+        # import ipdb;
+        # ipdb.set_trace(context=5)
+        #####################
         self.game_engine = engine
-        return self.game_engine
+        # print(self.game_engine.hero.__dict__)
+        # return self.game_engine
+
+        # for i in engine.map:
+        #     poly = i[0][0]
+        #     print(poly)
+
         # FIXME save engine and send it to next in chain !!! Здесь цепочка обязанностей должна быть.
-        # Отрисовка идет по классам и отрисовывает их пом мере надобности
 
 
     def draw_hero(self):
@@ -76,13 +89,16 @@ class GameSurface(ScreenHandle):
                            (coord[1] - min_y) * self.game_engine.sprite_size))
 
     def draw(self, canvas):
+
         size = self.game_engine.sprite_size
     # FIXME || calculate (min_x,min_y) - left top corner
+
 
         min_x = 0
         min_y = 0
 
-    ##
+    ## в game_engine нет кортежа с координатами. неправильный возврат у метода коннект движок
+
         self.draw_map()
         for obj in self.game_engine.objects:
             self.blit(obj.sprite[0], ((obj.position[0] - min_x) * self.game_engine.sprite_size,
