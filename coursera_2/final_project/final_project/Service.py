@@ -189,7 +189,7 @@ class RandomMap(MapFactory):
 
             for obj_name in object_list_prob['enemies']:
                 prop = object_list_prob['enemies'][obj_name]
-                for i in range(random.randint(50, 500)):
+                for i in range(random.randint(1, 10)):
                     coord = (random.randint(1, 30), random.randint(1, 22))
                     intersect = True
                     while intersect:

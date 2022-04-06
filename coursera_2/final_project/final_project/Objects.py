@@ -12,17 +12,19 @@ def create_sprite(img, sprite_size):
 
 
 class Interactive(ABC):
-
-    @abstractmethod
-    def interact(self, engine, hero):
-        pass
-
-    def draw(self, canval):
-        canval.blit(self.sprite, self.position)
+    pass
 
 
 class AbstractObject(ABC):
-    pass
+
+    @abstractmethod
+    def __init__(self, position, min_x, sprite):
+        self.position = position
+        self.min_x = min_x
+        self.sprite = sprite
+
+    def draw(self, canval):
+        canval.blit(self.sprite, self.position)
 
 
 class Ally(AbstractObject, Interactive):
@@ -160,3 +162,5 @@ class Enemy(Creature):
 
 # FIXME
 # Задать класс объектов сундука и лестницы
+
+# https://github.com/Searge/mipt_oop/tree/master/week_5/final_project
