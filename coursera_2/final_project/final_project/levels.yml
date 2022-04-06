@@ -1,8 +1,7 @@
 levels:
   - !empty_map {}
-
-#  - !special_map
-#    rat: 5
+  - !special_map
+    rat: 5
 #  - !special_map
 #    rat: 10
 #    knight: 5

@@ -70,6 +70,7 @@ class GameSurface(ScreenHandle):
         min_x, min_y = self.calculate()
         self.draw_map()
         for obj in self.game_engine.objects:
+            print(obj)
             self.blit(obj.sprite[0], ((obj.position[0] - min_x) * size,
                                       (obj.position[1] - min_y) * size))
         self.draw_hero()
