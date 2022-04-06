@@ -58,21 +58,19 @@ class Hero(Creature):
         self.gold = 0
         super().__init__(icon, stats, pos)
 
-    def level_up(self, up_exp):
-        print(up_exp)
-        self.exp += up_exp
+    def level_up(self):
 
-        while self.exp >= 100 * (2 ** (self.level - 1)):
-            yield "level up!"
+        if self.exp >= 100 * (2 ** (self.level - 1)):
             self.level += 1
             self.stats["strength"] += 2
             self.stats["endurance"] += 2
             self.calc_max_HP()
             self.hp = self.max_hp
+            return "------level up!---------"
 
     #  Реализовать смерть героя
     def die(self):
-        pass
+        print(111111111111111)
 
 
 class Effect(Hero):
@@ -80,7 +78,7 @@ class Effect(Hero):
     def __init__(self, base):
         self.base = base
         self.stats = self.base.stats.copy()
-        self.apply_effect()
+        # self.apply_effect()
 
     @property
     def position(self):
@@ -134,9 +132,10 @@ class Effect(Hero):
     def sprite(self):
         return self.base.sprite
 
-    @abstractmethod
-    def apply_effect(self):
-        pass
+    # Абстрактный метод наложенных эффектов
+    # @abstractmethod
+    # def apply_effect(self):
+    #     pass
 
 
 class Enemy(Creature):
@@ -148,13 +147,12 @@ class Enemy(Creature):
 
     def interact(self, engine, hero):
         for i in range(0, self.stats['strength']):
-            damage = self.stats['intelligence'] + self.stats['endurance']
+            damage = self.stats['endurance']
             hero.hp -= damage
             engine.notify('Урон {}'.format(damage))
 
-        # import ipdb; ipdb.set_trace()
-
-        hero.level_up(10)
+        hero.exp += self.experience
+        engine.notify(hero.level_up())
 
         # if hero.hp < 0:  # Реализовать смерть героя
         #     hero.die()
