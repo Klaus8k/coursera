@@ -23,8 +23,8 @@ ally:
   heal:
     sprite: [NPC_3.png]
     action: restore_hp
-    min-count: 0
-    max-count: 3
+    min-count: 1
+    max-count: 6
 enemies:
   rat:
     sprite: [rat.png]

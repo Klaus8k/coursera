@@ -17,8 +17,13 @@ class Interactive(ABC):
     def interact(self, engine, hero):
         pass
 
+    def draw(self, canval):
+        canval.blit(self.sprite, self.position)
+
+
 class AbstractObject(ABC):
     pass
+
 
 class Ally(AbstractObject, Interactive):
 
@@ -53,7 +58,10 @@ class Hero(Creature):
         self.gold = 0
         super().__init__(icon, stats, pos)
 
-    def level_up(self):
+    def level_up(self, up_exp):
+        print(up_exp)
+        self.exp += up_exp
+
         while self.exp >= 100 * (2 ** (self.level - 1)):
             yield "level up!"
             self.level += 1
@@ -61,6 +69,10 @@ class Hero(Creature):
             self.stats["endurance"] += 2
             self.calc_max_HP()
             self.hp = self.max_hp
+
+    #  Реализовать смерть героя
+    def die(self):
+        pass
 
 
 class Effect(Hero):
@@ -126,7 +138,7 @@ class Effect(Hero):
     def apply_effect(self):
         pass
 
-# Класс врагов, насыщается в картах
+
 class Enemy(Creature):
     def __init__(self, icon, stats, experience, position):
         self.sprite = icon
@@ -134,5 +146,19 @@ class Enemy(Creature):
         self.position = position
         self.experience = experience
 
+    def interact(self, engine, hero):
+        for i in range(0, self.stats['strength']):
+            damage = self.stats['intelligence'] + self.stats['endurance']
+            hero.hp -= damage
+            engine.notify('Урон {}'.format(damage))
+
+        # import ipdb; ipdb.set_trace()
+
+        hero.level_up(10)
+
+        # if hero.hp < 0:  # Реализовать смерть героя
+        #     hero.die()
+
+
 # FIXME
-# add classes
+# Задать класс объектов сундука и лестницы

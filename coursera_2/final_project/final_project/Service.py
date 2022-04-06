@@ -189,7 +189,7 @@ class RandomMap(MapFactory):
 
             for obj_name in object_list_prob['enemies']:
                 prop = object_list_prob['enemies'][obj_name]
-                for i in range(random.randint(0, 5)):
+                for i in range(random.randint(50, 500)):
                     coord = (random.randint(1, 30), random.randint(1, 22))
                     intersect = True
                     while intersect:
@@ -211,9 +211,8 @@ class RandomMap(MapFactory):
             return self.objects
 
 
-# FIXME
-# add classes for YAML !empty_map and !special_map{}
-##########################
+# FIXME add classes for YAML !empty_map and !special_map{}
+
 class EmptyMap(MapFactory):
     yaml_tag = "!empty_map"
 
