@@ -12,7 +12,9 @@ def create_sprite(img, sprite_size):
 
 
 class Interactive(ABC):
-    pass
+    @abstractmethod
+    def interact(self, engine, hero):
+        self.action(engine, hero)
 
 
 class AbstractObject(ABC):
@@ -63,16 +65,13 @@ class Hero(Creature):
     def level_up(self):
 
         if self.exp >= 100 * (2 ** (self.level - 1)):
+            yield "------level up!---------"
             self.level += 1
             self.stats["strength"] += 2
             self.stats["endurance"] += 2
             self.calc_max_HP()
             self.hp = self.max_hp
-            return "------level up!---------"
 
-    #  Реализовать смерть героя
-    def die(self):
-        print(111111111111111)
 
 
 class Effect(Hero):
@@ -80,7 +79,7 @@ class Effect(Hero):
     def __init__(self, base):
         self.base = base
         self.stats = self.base.stats.copy()
-        # self.apply_effect()
+        self.apply_effect()
 
     @property
     def position(self):
@@ -134,10 +133,19 @@ class Effect(Hero):
     def sprite(self):
         return self.base.sprite
 
-    # Абстрактный метод наложенных эффектов
-    # @abstractmethod
-    # def apply_effect(self):
-    #     pass
+    @abstractmethod
+    def apply_effect(self):
+        pass
+
+class Weakness(Effect):
+    def __init__(self, base):
+        self.base = base
+        self.stats = self.base.stats.copy()
+        self.apply_effect()
+
+    def apply_effect(self):
+        self.stats['luck'] -= 1
+        return self.stats
 
 
 class Enemy(Creature):
@@ -160,7 +168,13 @@ class Enemy(Creature):
         #     hero.die()
 
 
-# FIXME
-# Задать класс объектов сундука и лестницы
+class Objects(Interactive):
+    def __init__(self, icon, position, action):
+        self.sprite = icon
+        self.position = position
+        self.action = action
+
+    def interact(self, engine, hero):
+        self.action(engine, hero)
 
 # https://github.com/Searge/mipt_oop/tree/master/week_5/final_project

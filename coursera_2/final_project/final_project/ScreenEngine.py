@@ -47,12 +47,6 @@ class GameSurface(ScreenHandle):
         self.draw_object(hero.sprite, hero.position)
 
     def draw_map(self):
-        # print(self.game_engine.map[0])
-        # FIXME || calculate (min_x,min_y) - left top corner
-
-        # min_x = 0
-        # min_y = 0
-
         min_x, min_y = self.calculate()
 
         if self.game_engine.map:
@@ -66,10 +60,6 @@ class GameSurface(ScreenHandle):
 
     def draw_object(self, sprite, coord):
         size = self.game_engine.sprite_size
-        # # FIXME || calculate (min_x,min_y) - left top corner
-        #
-        # min_x = 0
-        # min_y = 0
 
         min_x, min_y = self.calculate()
         self.blit(sprite, ((coord[0] - min_x) * size,
@@ -77,10 +67,6 @@ class GameSurface(ScreenHandle):
 
     def draw(self, canvas):
         size = self.game_engine.sprite_size
-        # # FIXME || calculate (min_x,min_y) - left top corner
-        #
-        # min_x = 0
-        # min_y = 0
         min_x, min_y = self.calculate()
         self.draw_map()
         for obj in self.game_engine.objects:
@@ -118,12 +104,9 @@ class ProgressBar(ScreenHandle):
         pygame.draw.rect(self, colors["black"], (50, 30, 200, 30), 2)
         pygame.draw.rect(self, colors["black"], (50, 70, 200, 30), 2)
 
-        pygame.draw.rect(self, colors[
-            "red"], (50, 30, 200 * self.engine.hero.hp / self.engine.hero.max_hp, 30))
-        pygame.draw.rect(self, colors["green"], (50, 70,
-                                                 200 * self.engine.hero.exp / (100 * (
-                                                             2 ** (self.engine.hero.level - 1))),
-                                                 30))
+        pygame.draw.rect(self, colors["red"], (50, 30, 200 * self.engine.hero.hp / self.engine.hero.max_hp, 30))
+        pygame.draw.rect(self, colors["green"], (50, 70,200 * self.engine.hero.exp /
+                                                                (100 * (2 ** (self.engine.hero.level - 1))), 30))
 
         font = pygame.font.SysFont("arial", 20)
         self.blit(font.render(f'Hero at {self.engine.hero.position}', True, colors["black"]),

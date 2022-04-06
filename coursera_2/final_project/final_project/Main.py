@@ -117,7 +117,6 @@ while engine.working:
 
     gameDisplay.blit(drawer, (0, 0))
     drawer.draw(gameDisplay)
-
     pygame.display.update()
 
 pygame.display.quit()

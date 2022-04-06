@@ -33,8 +33,9 @@ def reload_game(engine, hero):
 
 def restore_hp(engine, hero):
     engine.score += 0.1
-    hero.hp = hero.max_hp
-    engine.notify("HP restored")
+    if hero.hp < hero.max_hp:
+        hero.hp = hero.max_hp
+        engine.notify("HP restored")
 
 
 def apply_blessing(engine, hero):
@@ -62,7 +63,7 @@ def remove_effect(engine, hero):
 
 
 def add_gold(engine, hero):
-    if random.randint(1, 10) == 1:
+    if random.randint(1, 1) == 1:
         engine.score -= 0.05
         engine.hero = Objects.Weakness(hero)
         engine.notify("You were cursed")
@@ -210,20 +211,20 @@ class RandomMap(MapFactory):
 
             return self.objects
 
-
-# FIXME add classes for YAML !empty_map and !special_map{}
-
+# Это пустая маленькая карта 9х9 для теста и подготовки к дальнейшему путешествию
 class EmptyMap(MapFactory):
     yaml_tag = "!empty_map"
+    global empty_map_size
+    empty_map_size = 11
 
     class Map:
 
         def __init__(self):
-            self.Map = [[0 for _ in range(41)] for _ in range(41)]
-            for i in range(41):
-                for j in range(41):
-                    if i == 0 or j == 0 or i == 40 or j == 40:
-                        self.Map[j][i] = wall
+            self.Map = [[0 for _ in range(empty_map_size)] for _ in range(empty_map_size)]
+            for i in range(empty_map_size):
+                for j in range(empty_map_size):
+                    if i == 0 or j == 0 or i == empty_map_size-1 or j == empty_map_size-1:
+                        self.Map[j][i] = wall # Round Wall
                     else:
                         self.Map[j][i] = [wall, floor1, floor2, floor3, floor1,
                                           floor2, floor3, floor1, floor2][random.randint(0, 8)]
@@ -236,29 +237,48 @@ class EmptyMap(MapFactory):
 
         def __init__(self):
             self.objects = []
+            self.free_size = empty_map_size - 2
 
         def get_objects(self, _map):
-            for obj_name in object_list_prob['enemies']:
-                prop = object_list_prob['enemies'][obj_name]
-                for i in range(random.randint(0, 5)):
-                    coord = (random.randint(1, 30), random.randint(1, 22))
+
+            for obj_name in object_list_prob['objects']:
+                prop = object_list_prob['objects'][obj_name]
+                for i in range(random.randint(prop['min-count'], prop['max-count'])):
+                    coord = (random.randint(1, self.free_size), random.randint(1, self.free_size))
                     intersect = True
                     while intersect:
                         intersect = False
                         if _map[coord[1]][coord[0]] == wall:
                             intersect = True
-                            coord = (random.randint(1, 39),
-                                     random.randint(1, 39))
+                            coord = (random.randint(1, self.free_size),
+                                     random.randint(1, self.free_size))
                             continue
                         for obj in self.objects:
                             if coord == obj.position or coord == (1, 1):
                                 intersect = True
-                                coord = (random.randint(1, 39),
-                                         random.randint(1, 39))
+                                coord = (random.randint(1, self.free_size),
+                                         random.randint(1, self.free_size))
+                    self.objects.append(Objects.Objects(prop['sprite'], coord, prop['action'])) # Add stairs and chest
 
-                    self.objects.append(Objects.Enemy(
-                        prop['sprite'], prop, prop['experience'], coord))
+            for obj_name in object_list_prob['ally']:
+                prop = object_list_prob['ally'][obj_name]
+                for i in range(random.randint(prop['min-count'], prop['max-count'])):
+                    coord = (random.randint(1, self.free_size), random.randint(1, self.free_size))
+                    intersect = True
+                    while intersect:
+                        intersect = False
+                        if _map[coord[1]][coord[0]] == wall:
+                            intersect = True
+                            coord = (random.randint(1, self.free_size),
+                                     random.randint(1, self.free_size))
+                            continue
+                        for obj in self.objects:
+                            if coord == obj.position or coord == (1, 1):
+                                intersect = True
+                                coord = (random.randint(1, self.free_size),
+                                         random.randint(1, self.free_size))
 
+                    self.objects.append(Objects.Ally(prop['sprite'], prop['action'], coord))  # Add stairs and chest
             return self.objects
 
 class SpecialMap(MapFactory):
@@ -298,8 +318,6 @@ class SpecialMap(MapFactory):
                 self.objects.append((obj_name, coord))
 
             return self.objects
-
-
 
 
 wall = [0]

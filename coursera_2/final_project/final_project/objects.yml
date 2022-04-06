@@ -7,7 +7,7 @@ objects:
   chest:
     sprite: [chest.png]
     action: add_gold
-    min-count: 0
+    min-count: 1
     max-count: 3
 ally:
   bless:
