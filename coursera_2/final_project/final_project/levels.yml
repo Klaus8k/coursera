@@ -2,10 +2,14 @@ levels:
   - !empty_map {}
   - !special_map
     rat: 5
+    stairs: 1
+    chest: 5
   - !special_map
     rat: 10
     knight: 5
+    stairs: 1
   - !special_map
     rat: 10
     knight: 10
+    stairs: 1
 #  - !random_map {}

@@ -169,7 +169,7 @@ class Enemy(Creature):
 
 
 class Objects(Interactive):
-    def __init__(self, icon, position, action):
+    def __init__(self, icon, action, position):
         self.sprite = icon
         self.position = position
         self.action = action
