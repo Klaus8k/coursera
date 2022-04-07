@@ -23,6 +23,7 @@ def reload_game(engine, hero):
     global level_list
     level_list_max = len(level_list) - 1
     engine.level += 1
+    engine.notify('Rise to floor # {} !!!'.format(engine.level))
     hero.position = [1, 1]
     engine.objects = []
     generator = level_list[min(engine.level, level_list_max)]
@@ -64,7 +65,7 @@ def remove_effect(engine, hero):
 
 
 def add_gold(engine, hero):
-    if random.randint(1, 1) == 1:
+    if random.randint(1, 10) == 1:
         engine.score -= 0.05
         engine.hero = Objects.Weakness(hero)
         engine.notify("You were cursed")
@@ -81,14 +82,12 @@ class MapFactory(yaml.YAMLObject):
     def from_yaml(cls, loader, node):
 
         _map = cls.Map()
-
-
         _obj = cls.Objects()
+
         enemies = loader.construct_mapping(node)
         for enemy in enemies.keys():
             for _ in range(enemies[enemy]):
                 _obj.objects.append(enemy)
-
 
         return {'map': _map, 'obj': _obj}
 
@@ -125,7 +124,6 @@ class EndMap(MapFactory):
 
         def get_objects(self, _map):
             return self.objects
-
 
 class RandomMap(MapFactory):
     yaml_tag = "!random_map"
@@ -295,15 +293,14 @@ class EmptyMap(MapFactory):
 class SpecialMap(MapFactory):
     yaml_tag = "!special_map"
 
-
     class Map:
 
-        def __init__(self):
-            self.map_size = 11
-            self.Map = [[0 for _ in range(self.map_size)] for _ in range(self.map_size)]
-            for i in range(self.map_size):
-                for j in range(self.map_size):
-                    if i == 0 or j == 0 or i == self.map_size - 1 or j == self.map_size - 1:
+        def __init__(self, map_size=(31,11)):
+            self.map_size = map_size
+            self.Map = [[0 for _ in range(self.map_size[0])] for _ in range(self.map_size[1])]
+            for i in range(self.map_size[0]):
+                for j in range(self.map_size[1]):
+                    if i == 0 or j == 0 or i == self.map_size[0] - 1 or j == self.map_size[1] - 1:
                         self.Map[j][i] = wall  # Round Wall
                     else:
                         self.Map[j][i] = [wall, floor1, floor2, floor3, floor1,
@@ -318,7 +315,6 @@ class SpecialMap(MapFactory):
             self.objects = []
 
         def get_objects(self, _map):
-            self.free_size = len(_map) - 2
             objects_tmp = self.objects
             self.objects = []
 
@@ -340,20 +336,20 @@ class SpecialMap(MapFactory):
             return self.objects
 
         def obj_position(self, _map):
-            coord = (random.randint(1, self.free_size), random.randint(1, self.free_size))
+            coord = (random.randint(1, len(_map[0])-2), random.randint(1, len(_map)-2))
             intersect = True
             while intersect:
                 intersect = False
                 if _map[coord[1]][coord[0]] == wall:
                     intersect = True
-                    coord = (random.randint(1, self.free_size),
-                             random.randint(1, self.free_size))
+                    coord = (random.randint(1, len(_map[0])-2),
+                             random.randint(1, len(_map)-2))
                     continue
                 for obj in self.objects:
                     if coord == obj.position or coord == (1, 1):
                         intersect = True
-                        coord = (random.randint(1, self.free_size),
-                                 random.randint(1, self.free_size))
+                        coord = (random.randint(1, len(_map[0])-2),
+                                 random.randint(1, len(_map)-2))
             return coord
 
 

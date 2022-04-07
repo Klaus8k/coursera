@@ -1,6 +1,7 @@
 levels:
   - !empty_map {}
   - !special_map
+#    map_size: (22,22)
     rat: 5
     stairs: 1
     chest: 5

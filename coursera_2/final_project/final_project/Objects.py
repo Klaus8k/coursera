@@ -61,6 +61,7 @@ class Hero(Creature):
         self.exp = 0
         self.gold = 0
         super().__init__(icon, stats, pos)
+        # self.stats --- {'strength': 20, 'endurance': 20, 'intelligence': 5, 'luck': 5}
 
     def level_up(self):
 
@@ -137,6 +138,16 @@ class Effect(Hero):
     def apply_effect(self):
         pass
 
+class Blessing(Effect):
+    def __init__(self, base):
+        self.base = base
+        self.stats = self.base.stats.copy()
+        self.apply_effect()
+
+    def apply_effect(self):
+        self.stats['strength'] -= 1
+        return self.stats
+
 class Weakness(Effect):
     def __init__(self, base):
         self.base = base
@@ -144,8 +155,9 @@ class Weakness(Effect):
         self.apply_effect()
 
     def apply_effect(self):
-        self.stats['luck'] -= 1
+        self.stats['strength'] -= 1
         return self.stats
+
 
 
 class Enemy(Creature):
