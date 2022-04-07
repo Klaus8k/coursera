@@ -61,15 +61,15 @@ class Hero(Creature):
         self.exp = 0
         self.gold = 0
         super().__init__(icon, stats, pos)
+
         # self.stats --- {'strength': 20, 'endurance': 20, 'intelligence': 5, 'luck': 5}
 
     def level_up(self):
 
         if self.exp >= 100 * (2 ** (self.level - 1)):
-            yield "------level up!---------"
             self.level += 1
-            self.stats["strength"] += 2
-            self.stats["endurance"] += 2
+            self.stats["strength"] += 10
+            self.stats["endurance"] += 10
             self.calc_max_HP()
             self.hp = self.max_hp
 
@@ -145,7 +145,18 @@ class Blessing(Effect):
         self.apply_effect()
 
     def apply_effect(self):
-        self.stats['strength'] -= 1
+        self.stats['luck'] *= 2
+        return self.stats
+
+class Berserk(Effect):
+    def __init__(self, base):
+        self.base = base
+        self.stats = self.base.stats.copy()
+        self.apply_effect()
+
+    def apply_effect(self):
+        self.stats['strength'] *= 2
+        self.stats['endurance'] += 20
         return self.stats
 
 class Weakness(Effect):
@@ -155,7 +166,7 @@ class Weakness(Effect):
         self.apply_effect()
 
     def apply_effect(self):
-        self.stats['strength'] -= 1
+        self.stats['strength'] -= 5
         return self.stats
 
 
@@ -168,10 +179,19 @@ class Enemy(Creature):
         self.experience = experience
 
     def interact(self, engine, hero):
-        for i in range(0, self.stats['strength']):
-            damage = self.stats['endurance']
-            hero.hp -= damage
-            engine.notify('Урон {}'.format(damage))
+
+        # урон героя
+        self.hero_damage = self.stats['strength'] * (self.stats['luck'] / 10)
+
+        battle = True
+        while battle:
+            for i in range(0, self.stats['endurance']//5):
+                damage = self.stats['strength'] * (self.stats['luck'] / 10)
+                hero.hp -= damage
+                engine.notify('Damage to Hero {}'.format(damage))
+
+
+
 
         hero.exp += self.experience
         engine.notify(hero.level_up())
