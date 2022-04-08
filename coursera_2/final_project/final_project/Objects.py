@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 import pygame
 import random
@@ -62,17 +63,14 @@ class Hero(Creature):
         self.gold = 0
         super().__init__(icon, stats, pos)
 
-        # self.stats --- {'strength': 20, 'endurance': 20, 'intelligence': 5, 'luck': 5}
-
     def level_up(self):
-
         if self.exp >= 100 * (2 ** (self.level - 1)):
             self.level += 1
             self.stats["strength"] += 10
             self.stats["endurance"] += 10
             self.calc_max_HP()
             self.hp = self.max_hp
-
+            return 'LEVEL UP'
 
 
 class Effect(Hero):
@@ -138,6 +136,7 @@ class Effect(Hero):
     def apply_effect(self):
         pass
 
+
 class Blessing(Effect):
     def __init__(self, base):
         self.base = base
@@ -147,6 +146,7 @@ class Blessing(Effect):
     def apply_effect(self):
         self.stats['luck'] *= 2
         return self.stats
+
 
 class Berserk(Effect):
     def __init__(self, base):
@@ -159,6 +159,7 @@ class Berserk(Effect):
         self.stats['endurance'] += 20
         return self.stats
 
+
 class Weakness(Effect):
     def __init__(self, base):
         self.base = base
@@ -169,35 +170,35 @@ class Weakness(Effect):
         self.stats['strength'] -= 5
         return self.stats
 
-
-
 class Enemy(Creature):
     def __init__(self, icon, stats, experience, position):
         self.sprite = icon
         self.stats = stats
+        self.hp = self.stats["strength"]
         self.position = position
         self.experience = experience
 
     def interact(self, engine, hero):
 
-        # урон героя
-        self.hero_damage = self.stats['strength'] * (self.stats['luck'] / 10)
-
-        battle = True
-        while battle:
-            for i in range(0, self.stats['endurance']//5):
-                damage = self.stats['strength'] * (self.stats['luck'] / 10)
-                hero.hp -= damage
-                engine.notify('Damage to Hero {}'.format(damage))
-
-
-
+        self.hp -= hero.stats["strength"]
+        if random.randint(0, 20) < 15:
+            hero.hp -= self.stats["strength"] * 10
 
         hero.exp += self.experience
-        engine.notify(hero.level_up())
 
-        # if hero.hp < 0:  # Реализовать смерть героя
-        #     hero.die()
+        while hero.exp >= 100 * (2 ** (hero.level - 1)):
+            engine.notify("level up!")
+            hero.level += 1
+            hero.stats["strength"] += 2
+            hero.stats["endurance"] += 4
+            hero.calc_max_HP()
+            hero.hp = hero.max_hp
+
+        engine.notify("Got " + str(self.experience) + " xp")
+
+        if hero.hp <= 0:
+            engine.notify("You're dead")
+            engine.game_process = False
 
 
 class Objects(Interactive):
