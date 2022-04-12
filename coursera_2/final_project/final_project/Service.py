@@ -3,6 +3,7 @@ import time
 import pygame
 import random
 import yaml
+from yaml.loader import Loader
 import os
 import Objects
 
@@ -23,7 +24,7 @@ def reload_game(engine, hero):
     global level_list
     level_list_max = len(level_list) - 1
     engine.level += 1
-    engine.notify('Rise to floor # {} !!!'.format(engine.level))
+    engine.notify('Переход на новый этаж'.format(engine.level))
     hero.position = [1, 1]
     engine.objects = []
     generator = level_list[min(engine.level, level_list_max)]
@@ -37,7 +38,7 @@ def restore_hp(engine, hero):
     engine.score += 0.1
     if hero.hp < hero.max_hp:
         hero.hp = hero.max_hp
-        engine.notify("HP restored")
+        engine.notify("ВЫЛЕЧЕН")
 
 
 def apply_blessing(engine, hero):
@@ -47,10 +48,10 @@ def apply_blessing(engine, hero):
             2 * hero.stats["intelligence"]
         if random.randint(0, 1) == 0:
             engine.hero = Objects.Blessing(hero)
-            engine.notify("Blessing applied")
+            engine.notify("Благословение УДАЧА Х2")
         else:
             engine.hero = Objects.Berserk(hero)
-            engine.notify("Berserk applied")
+            engine.notify("Берсерк СИЛА Х2 ВЫНОСЛИВОСТЬ +20")
     else:
         engine.score -= 0.1
 
@@ -378,7 +379,7 @@ def service_init(sprite_size, full=True):
 
     file = open("objects.yml", "r")
 
-    object_list_tmp = yaml.load(file.read())
+    object_list_tmp = yaml.load(file.read(), Loader=Loader)
     if full:
         object_list_prob = object_list_tmp
 
@@ -413,6 +414,6 @@ def service_init(sprite_size, full=True):
 
     if full:
         file = open("levels.yml", "r")
-        level_list = yaml.load(file.read())['levels']
+        level_list = yaml.load(file.read(), Loader=Loader)['levels']
         level_list.append({'map': EndMap.Map(), 'obj': EndMap.Objects()})
         file.close()

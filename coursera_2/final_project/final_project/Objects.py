@@ -15,7 +15,7 @@ def create_sprite(img, sprite_size):
 class Interactive(ABC):
     @abstractmethod
     def interact(self, engine, hero):
-        self.action(engine, hero)
+        pass
 
 
 class AbstractObject(ABC):
