@@ -1,6 +1,5 @@
 import pygame
 import collections
-import time
 
 colors = {
     "black": (0, 0, 0, 255),
