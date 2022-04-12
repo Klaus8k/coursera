@@ -41,6 +41,16 @@ class Ally(AbstractObject, Interactive):
         self.action(engine, hero)
 
 
+class Objects(Interactive):
+    def __init__(self, icon, action, position):
+        self.sprite = icon
+        self.position = position
+        self.action = action
+
+    def interact(self, engine, hero):
+        self.action(engine, hero)
+
+
 class Creature(AbstractObject):
 
     def __init__(self, icon, stats, position):
@@ -73,12 +83,54 @@ class Hero(Creature):
             return 'LEVEL UP'
 
 
+class Enemy(Creature):
+    def __init__(self, icon, stats, experience, position):
+        self.sprite = icon
+        self.stats = stats
+        self.hp = self.stats["strength"]
+        self.position = position
+        self.experience = experience
+
+    def interact(self, engine, hero):
+        engine.notify('>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        while True:
+            hero_hit = hero.stats["strength"] * random.randint(1,hero.stats["luck"])
+            enemy_hit = self.stats["strength"] * (random.randint(1,self.stats["luck"])/2)
+            if random.randint(0, 20) < 15:
+                hero.hp -= enemy_hit
+                message = 'Враг нанес {} урона'.format(enemy_hit)
+            else:
+                message = 'Враг промахнулся'
+            engine.notify(message)
+
+            if hero.hp <= 0:
+                engine.notify("Герой погиб. R - для рестарта")
+                engine.show_help = True
+                break
+            elif self.hp <= 0:
+                message = "Враг повержен! За победу: " + str(self.experience) + " xp"
+                engine.notify(message)
+                break
+            else:
+                self.hp -= hero_hit
+                engine.notify('Вы нанесли {} урона'.format(hero_hit))
+
+        hero.exp += self.experience
+        engine.notify('>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+
+        if hero.exp >= 100 * (2 ** (hero.level - 1)):
+            engine.notify("level up!")
+            hero.level += 1
+            hero.stats["strength"] += 2
+            hero.stats["endurance"] += 4
+            hero.calc_max_HP()
+            hero.hp = hero.max_hp
+
 class Effect(Hero):
 
     def __init__(self, base):
         self.base = base
         self.stats = self.base.stats.copy()
-        self.apply_effect()
 
     @property
     def position(self):
@@ -110,7 +162,9 @@ class Effect(Hero):
 
     @hp.setter
     def hp(self, value):
-        self.base.hp = value
+        if self.base.max_hp < value:
+            self.base.hp = self.base.max_hp
+        else: self.base.hp = value
 
     @property
     def max_hp(self):
@@ -169,45 +223,3 @@ class Weakness(Effect):
     def apply_effect(self):
         self.stats['strength'] -= 5
         return self.stats
-
-class Enemy(Creature):
-    def __init__(self, icon, stats, experience, position):
-        self.sprite = icon
-        self.stats = stats
-        self.hp = self.stats["strength"]
-        self.position = position
-        self.experience = experience
-
-    def interact(self, engine, hero):
-
-        self.hp -= hero.stats["strength"]
-        if random.randint(0, 20) < 15:
-            hero.hp -= self.stats["strength"] * 10
-
-        hero.exp += self.experience
-
-        while hero.exp >= 100 * (2 ** (hero.level - 1)):
-            engine.notify("level up!")
-            hero.level += 1
-            hero.stats["strength"] += 2
-            hero.stats["endurance"] += 4
-            hero.calc_max_HP()
-            hero.hp = hero.max_hp
-
-        engine.notify("Got " + str(self.experience) + " xp")
-
-        if hero.hp <= 0:
-            engine.notify("You're dead")
-            engine.game_process = False
-
-
-class Objects(Interactive):
-    def __init__(self, icon, action, position):
-        self.sprite = icon
-        self.position = position
-        self.action = action
-
-    def interact(self, engine, hero):
-        self.action(engine, hero)
-
-# https://github.com/Searge/mipt_oop/tree/master/week_5/final_project

@@ -48,28 +48,32 @@ def apply_blessing(engine, hero):
             2 * hero.stats["intelligence"]
         if random.randint(0, 1) == 0:
             engine.hero = Objects.Blessing(hero)
+            engine.hero_effects.append('Благословние')
             engine.notify("Благословение УДАЧА Х2")
         else:
             engine.hero = Objects.Berserk(hero)
+            engine.hero_effects.append('Берсерк')
             engine.notify("Берсерк СИЛА Х2 ВЫНОСЛИВОСТЬ +20")
     else:
         engine.score -= 0.1
-
+    print(engine.hero_effects)
 
 def remove_effect(engine, hero):
     if hero.gold >= int(10 * 1.5**engine.level) - 2 * hero.stats["intelligence"] and "base" in dir(hero):
         hero.gold -= int(10 * 1.5**engine.level) - \
             2 * hero.stats["intelligence"]
+
         engine.hero = hero.base
         engine.hero.calc_max_HP()
-        engine.notify("Effect removed")
+        if engine.hero_effects:
+            engine.notify("Эффект {} снят".format(engine.hero_effects.pop()))
 
 
 def add_gold(engine, hero):
     if random.randint(1, 10) == 1:
         engine.score -= 0.05
         engine.hero = Objects.Weakness(hero)
-        engine.notify("You were cursed")
+        engine.notify("Пусто, теперь у вас слабость")
     else:
         engine.score += 0.1
         gold = int(random.randint(10, 1000) * (1.1**(engine.hero.level - 1)))
