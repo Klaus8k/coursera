@@ -1,12 +1,11 @@
 import pygame
 import os
 import Objects
-import ScreenEngine
+import ScreenEngine as SE
 import Logic
 import Service
 
-
-SCREEN_DIM = (800, 600)
+SCREEN_DIM = (1000, 600)
 
 pygame.init()
 gameDisplay = pygame.display.set_mode(SCREEN_DIM)
@@ -15,6 +14,7 @@ KEYBOARD_CONTROL = True
 
 if not KEYBOARD_CONTROL:
     import numpy as np
+
     answer = np.zeros(4, dtype=float)
 
 base_stats = {
@@ -25,6 +25,7 @@ base_stats = {
 }
 
 
+# import ipdb; ipdb.set_trace(context=5)
 def create_game(sprite_size, is_new):
     global hero, engine, drawer, iteration
     if is_new:
@@ -33,14 +34,14 @@ def create_game(sprite_size, is_new):
         engine = Logic.GameEngine()
         Service.service_init(sprite_size)
         Service.reload_game(engine, hero)
-        with ScreenEngine as SE:
-            drawer = SE.GameSurface((640, 480), pygame.SRCALPHA, (0, 480),
-                                    SE.ProgressBar((640, 120), (640, 0),
-                                                   SE.InfoWindow((160, 600), (50, 50),
-                                                                 SE.HelpWindow((700, 500), pygame.SRCALPHA, (0, 0),
-                                                                               SE.ScreenHandle(
-                                                                                   (0, 0))
-                                                                               ))))
+        # with ScreenEngine as SE:
+        drawer = SE.GameSurface((640, 480), pygame.SRCALPHA, (0, 480),
+                                SE.ProgressBar((640, 120), (640, 0),
+                                               SE.InfoWindow((360, 600), (50, 50),
+                                                             SE.HelpWindow((700, 500), pygame.SRCALPHA, (0, 0),
+                                                                           SE.ScreenHandle(
+                                                                               (0, 0))
+                                                                           ))))
 
     else:
         engine.sprite_size = sprite_size
@@ -109,13 +110,11 @@ while engine.working:
             move = actions[np.argmax(answer)]()
             state = pygame.surfarray.array3d(gameDisplay)
             reward = engine.score - prev_score
-            print(reward)
         else:
             create_game()
 
     gameDisplay.blit(drawer, (0, 0))
     drawer.draw(gameDisplay)
-
     pygame.display.update()
 
 pygame.display.quit()

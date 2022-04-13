@@ -4,13 +4,13 @@ objects:
     action: reload_game
     min-count: 1
     max-count: 1
-  chest:
+  chest: # Сейчас неудачный сундук 10% отнимает 1 удачи
     sprite: [chest.png]
     action: add_gold
-    min-count: 0
+    min-count: 1
     max-count: 3
 ally:
-  bless:
+  bless: # Серый
     sprite: [NPC_1.png]
     action: apply_blessing
     min-count: 1
@@ -23,8 +23,8 @@ ally:
   heal:
     sprite: [NPC_3.png]
     action: restore_hp
-    min-count: 0
-    max-count: 3
+    min-count: 1
+    max-count: 6
 enemies:
   rat:
     sprite: [rat.png]

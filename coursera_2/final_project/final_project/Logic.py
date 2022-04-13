@@ -4,6 +4,7 @@ import Service
 class GameEngine:
     objects = []
     map = None
+    hero_effects = []
     hero = None
     level = -1
     working = True
